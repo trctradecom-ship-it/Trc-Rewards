@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TRC Dashboard</title>
+
+<link rel="icon" type="image/png" href="./trclogo.png?v=5">
+<link rel="apple-touch-icon" href="./trclogo.png">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#000000">
+  
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>TRC TRADECOM</h1>
+
+<div class="topbar">
+<div>
+TRC Price
+<span id="price">$0</span>
+</div>
+
+<div id="wallet" class="walletAddress">Wallet Not Connected</div>
+</div>
+
+<button onclick="connectWallet()" class="mainBtn">
+Connect Wallet
+</button>
+
+<div class="chartBox">
+<canvas id="priceChart"></canvas>
+</div>
+
+  <div class="buy-trc-wrapper">
+    <a href="https://trctradecom-ship-it.github.io/TRC-DEX/" target="_blank" class="buy-trc-btn">
+         BUY TRC FROM DEX
+    </a>
+  </div>
+
+<div class="card">
+
+<h2>Dashboard</h2>
+
+<div class="tabs">
+  <button id="tabSystem" class="tab active" onclick="showSystem()">System Info</button>
+  <button id="tabUser" class="tab" onclick="showUser()">User Info</button>
+</div>
+
+<!-- SYSTEM INFO -->
+<div id="systemBox" class="grid">
+
+<div>Current Epoch<br><span id="epoch">0</span></div>
+
+<div>Reward Pool<br><span id="rewardPool">-</span> TRC</div>
+<div>Epoch Start<br><span id="epochStart">-</span></div>
+<div>Next Epoch<br><span id="nextEpoch">-</span></div>
+<div>Epoch Countdown<br><span id="epochTimer">-</span></div>
+<div>Next Claim<br><span id="claimTimer">-</span></div>
+<div>Pending Reward<br><span id="pending">0</span></div> 
+</div>
+
+<!-- USER INFO -->
+<div id="userBox" class="grid" style="display:none;">
+
+<div>User Level<br><span id="level">0</span></div>
+<div>Base Weight<br><span id="baseWeight">0</span></div>
+<div>Temp Weight<br><span id="tempWeight">0</span></div>
+<div>Epoch Weight<br><span id="epochWeight">0</span></div>
+<div>Total Weight<br><span id="totalWeight">0</span></div>
+<div>Downline Count<br><span id="downline">0</span></div>
+<div>Referrer<br><span id="referrer">-</span></div>
+<div>Last Claim Epoch<br><span id="lastClaimEpoch">0</span></div>
+<div>
+  Last Epoch Reward Pool<br>
+  <span id="lastEpochReward">0</span> TRC
+</div>
+</div>
+
+</div>
+
+<div class="card">
+<h2>Register</h2>
+<input id="ref" placeholder="Referral Address">
+<button onclick="register()">Register</button>
+</div>
+
+<div class="card">
+<h2>Approve TRC</h2>
+<input id="approveAmount" placeholder="TRC Amount">
+<button onclick="approveTRC()">Approve</button>
+</div>
+
+<div class="card">
+
+<h2>Join Levels</h2>
+
+<div class="grid">
+
+<button onclick="joinLevel(1)">Level 1 ($10)</button>
+<button onclick="joinLevel(2)">Level 2 ($20)</button>
+<button onclick="joinLevel(3)">Level 3 ($40)</button>
+<button onclick="joinLevel(4)">Level 4 ($100)</button>
+<button onclick="joinLevel(5)">Level 5 ($250)</button>
+<button onclick="joinLevel(6)">Level 6 ($550)</button>
+
+</div>
+
+</div>
+
+<div class="card">
+<h2>Claim Reward</h2>
+<button onclick="claimReward()">Claim 5 Days Reward</button>
+</div>
+
+<div class="card">
+<h2>Transaction Status</h2>
+<p id="status"></p>
+</div>
+
+</div>
+
+<!-- ================= Referral ================= -->  
+<div class="box">
+  <h3>Referral Link</h3>
+
+  <input id="refLink" readonly placeholder="Connect wallet to generate link" />
+
+  <button onclick="copyRef()">Copy Link</button>
+</div>
+
+  
+<!-- ================= REWARD CALCULATOR ================= -->
+<div class="card calculator-card">
+
+<h2>Reward Calculator</h2>
+
+<div class="grid">
+
+
+  
+<div>
+  <label>Reward Pool (Last Epoch)</label><br>
+  <input type="number" id="pool" placeholder="Auto-filled" readonly>
+</div>
+
+<div>
+<label>Base Weight</label><br>
+<input type="number" id="calcBaseWeight" placeholder="Enter base weight">
+</div>
+
+<div>
+<label>Temp Weight</label><br>
+<input type="number" id="calcTempWeight" placeholder="Enter temp weight">
+</div>
+
+<div>
+<label>Epoch Total Weight</label><br>
+<input type="number" id="calcTotalWeight" placeholder="Enter total weight">
+</div>
+
+</div>
+
+<br>
+
+<button onclick="calculateReward()" class="mainBtn">
+Calculate Reward
+</button>
+
+<p id="rewardResult"></p>
+
+</div>
+
+<!-- =========================
+     FAQ SECTION START
+========================= -->
+<section class="faq-section" id="faq">
+  <div class="faq-container">
+
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <p class="faq-subtitle">
+      Quick answers about TRC rewards, referrals, levels and claims.
+    </p>
+
+    <div class="faq-box">
+
+      <details>
+        <summary>What is TRC Affiliate Rewards?</summary>
+        <p>
+          A smart contract based rewards ecosystem where users upgrade levels,
+          build teams and earn benefits through activity.
+        </p>
+      </details>
+
+      <details>
+        <summary>How do I join?</summary>
+        <p>
+          Register using a valid referrer wallet, then activate by purchasing Level 1.
+        </p>
+      </details>
+
+      <details>
+  <summary>What is TRC EMA Price?</summary>
+  <p>
+    TRC EMA (Exponential Moving Average) Price is a smart price smoothing system that reduces sudden market spikes and dumps.
+
+    <br><br>
+
+    <strong>Formula:</strong><br>
+    EMAnew = ((Raw Price × 20) + (Old EMA × 80)) / 100
+
+    <br><br>
+
+    <strong>Example 1:</strong><br>
+    Old EMA Price = $10<br>
+    New Market Price = $15<br><br>
+
+    EMAnew = ((15 × 20) + (10 × 80)) / 100<br>
+    EMAnew = (300 + 800) / 100<br>
+    EMAnew = 1100 / 100<br>
+    EMA New price = $11
+
+    <br><br>
+
+    <strong>Example 2:</strong><br>
+    Old EMA Price = $11<br>
+    New Market Price = $20<br><br>
+
+    EMAnew = ((20 × 20) + (11 × 80)) / 100<br>
+    EMAnew = (400 + 880) / 100<br>
+    EMAnew = 1280 / 100<br>
+    EMA New price = $12.8
+
+    <br><br>
+
+    <strong>Example 3 (Price Drop):</strong><br>
+    Old EMA Price = $12.8<br>
+    New Market Price = $15<br><br>
+
+    EMAnew = ((15 × 20) + (12.8 × 80)) / 100<br>
+    EMAnew = (300 + 1024) / 100<br>
+    EMAnew = 1324 / 100<br>
+    EMA New Price = $13.24
+
+    <br><br>
+
+    <strong>Example 4 (Price Drop):</strong><br>
+    Old EMA Price = $13.24<br>
+    New Market Price = $10<br><br>
+
+    EMAnew = ((10 × 20) + (13.24 × 80)) / 100<br>
+    EMAnew = (200 + 1059.2) / 100<br>
+    EMAnew = 1259.2 / 100<br>
+    EMA New Price = $12.592
+    
+    <br><br>
+    
+    EMA moves gradually instead of instantly following sudden market changes, helping create a more stable and fair TRC price.
+    </p>
+   </details>
+
+
+    <details>
+  <summary>Benifits Of TRC Affiliate Staking Program use Trc EMA Price for level Joining Instead Of DEX Trc Price?</summary>
+  <p>
+    In the TRC system, users join levels using the TRC equivalent value of USD. 
+    This means the required TRC amount changes based on the current TRC market price.
+
+    <br><br>
+
+    If direct raw DEX price is used, sudden price pumps or dumps can create imbalance in level costs.
+
+    <br><br>
+
+    Example:
+    <br>
+    Level Cost = $100
+    <br><br>
+
+    TRC Price = $10 → User pays 10 TRC
+    <br>
+    TRC Price suddenly drops to $5 → User pays 20 TRC
+    <br>
+    TRC Price suddenly pumps to $20 → User pays only 5 TRC
+
+    <br><br>
+
+    This creates unstable joining conditions because users entering at different times may pay very different TRC amounts for the same level.
+
+    <br><br>
+
+    TRC EMA Price helps smooth these sudden market changes by gradually adjusting the joining price instead of instantly following every DEX fluctuation.
+
+    <br><br>
+
+    Benefits of EMA system:
+    <br>
+    • Creates more stable level costs<br>
+    • Reduces sudden TRC amount imbalance<br>
+    • Protects against extreme DEX volatility<br>
+    • Supports fairer user entry conditions<br>
+    • Helps maintain long-term ecosystem stability
+  </p>
+    </details>
+
+
+      
+      <details>
+        <summary>How do referral rewards work?</summary>
+        <p>
+          Qualified uplines receive rewards when team members upgrade levels,
+          based on contract eligibility rules.
+        </p>
+      </details>
+
+      <details>
+        <summary>What is Temp Weight?</summary>
+        <p>
+          Temp Weight is a bonus reward power that can increase your claim share
+          during reward distribution.
+        </p>
+      </details>
+
+      <details>
+        <summary>How do I claim rewards?</summary>
+        <p>
+          Eligible users can claim rewards after each epoch directly through the dashboard.
+        </p>
+      </details>
+
+      <details>
+        <summary>Which wallets are supported?</summary>
+        <p>
+          MetaMask, Trust Wallet and most Web3 compatible wallets.
+        </p>
+      </details>
+
+      <details>
+        <summary>Is everything transparent?</summary>
+        <p>
+          Yes. Transactions and contract activity are visible on blockchain explorers.
+        </p>
+      </details>
+
+    </div>
+  </div>
+</section>
+<!-- =========================
+     FAQ SECTION END
+========================= -->
+  
+<script src="script.js"></script>
+
+</body>
+</html>
