@@ -1,0 +1,834 @@
+
+body{
+background:black;
+color:white;
+font-family:Arial;
+margin:0;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:15px;
+}
+
+h1{
+text-align:center;
+color:#FFD700;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+background:#0f172a;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+
+color:#ffffff;
+font-weight:700;  
+}
+
+button{
+background:linear-gradient(90deg,#FFD700,#ff7a00);
+border:none;
+padding:12px;
+border-radius:8px;
+width:100%;
+font-weight:bold;
+margin-top:10px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+box-shadow:0 0 15px gold;
+}
+
+input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#1e293b;
+color:white;
+margin-top:10px;
+}
+
+.card{
+background:#020617;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.grid div{
+background:#111827;
+padding:10px;
+border-radius:8px;
+}
+
+.chartBox{
+background:#020617;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.walletAddress{
+font-size:12px;
+word-break:break-all;
+font-weight:bold;   
+
+color:rgba(255,255,255,0.95);
+
+text-shadow:
+0 0 6px rgba(255,255,255,0.25),
+0 0 12px rgba(0,0,0,0.35);
+  
+}
+
+#price{
+color:#16c784;
+font-weight:bold;
+
+text-shadow:
+0 0 6px rgba(255,255,255,0.25),
+0 0 12px rgba(0,0,0,0.35);  
+}
+
+@media(max-width:600px){
+.grid{
+grid-template-columns:1fr;
+}
+}
+
+
+
+/* ========================== INPUT BOXES INSIDE CARD ========================== */
+.card input {
+  width: 100%;                /* full width of the card column */
+  padding: 10px 12px;         /* space inside input */
+  border-radius: 8px;         /* rounded corners */
+  border: 1px solid #444;     /* subtle border */
+  background: #111;           /* dark background inside card */
+  color: #fff;                /* white text */
+  font-size: 1rem;            /* readable text */
+  margin-top: 5px;            /* space above input */
+  box-sizing: border-box;
+}
+
+/* Focus effect for better UX */
+.card input:focus {
+  outline: none;
+  border: 1px solid gold;
+  background: #222;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .card input {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+}
+
+
+
+
+/* ========================== GREEN TEXT FOR EVENTS / CONFIRMATION ========================== */
+#status {
+  color: #00c853;          /* bright green text */
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1.4;
+  word-break: break-word;   /* long text wraps inside card */
+}
+
+/* Make links inside #status green as well */
+#status a {
+  color: #00c853;          /* bright green */
+  text-decoration: none;    /* remove underline */
+  font-weight: bold;
+}
+
+/* Optional: smaller padding inside card box if needed */
+#status span, #status p {
+  color: #00c853;          /* green text */
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+#status a,
+#status span,
+#status p {
+  background: none !important;   /* remove any leftover green box */
+}
+
+/* ================= CALCULATOR - 2 ROW LAPTOP ================= */
+
+.calculator-card {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+/* 2 columns → 2 rows (4 inputs total) */
+.calculator-card .grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* Labels */
+.calculator-card label {
+  font-size: 14px;
+  color: #cbd5f5;
+}
+
+/* Inputs */
+.calculator-card input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: none;
+  background: #0f172a;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* Button */
+.calculator-card button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #22c55e;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.calculator-card button:hover {
+  background: #16a34a;
+}
+
+/* Result */
+#rewardResult {
+  margin-top: 15px;
+  font-size: 16px;
+  text-align: center;
+  color: #38bdf8;
+}
+
+
+
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  background: #0b1a2a;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.tab.active {
+  background: #1e3a5f;
+  color: #fff;
+}
+
+
+/* mobile and laptop for referral */
+
+
+
+.box {
+  background: #111a2e;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.box h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.box input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.box button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, orange, gold);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.box button:hover {
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .box {
+    max-width: 500px;
+    margin: 20px auto;
+  }
+}
+
+
+
+/* ===== FIX REFERRAL BOX OVERFLOW ===== */
+
+.box {
+  width: 100%;
+  max-width: 500px;   /* keeps it centered and not too wide */
+  margin: 20px auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.box input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+
+  box-sizing: border-box;   /* ✅ MOST IMPORTANT FIX */
+}
+
+
+
+
+@media (max-width: 768px) {
+
+  .box {
+    width: calc(100% - 32px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+/* =========================
+   FAQ SECTION
+========================= */
+
+.faq-section{
+  padding:60px 15px;
+  background:linear-gradient(180deg,#081018,#0d1622);
+}
+
+.faq-container{
+  max-width:900px;
+  margin:auto;
+}
+
+.faq-title{
+  text-align:center;
+  font-size:32px;
+  color:#ffffff;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.faq-subtitle{
+  text-align:center;
+  color:#b9c4d3;
+  font-size:15px;
+  margin-bottom:35px;
+  line-height:1.5;
+}
+
+/* FAQ BOX */
+
+.faq-box details{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:16px 18px;
+  margin-bottom:14px;
+  transition:0.3s ease;
+}
+
+.faq-box details:hover{
+  border-color:#f5b400;
+  transform:translateY(-2px);
+}
+
+.faq-box summary{
+  color:#ffffff;
+  font-size:17px;
+  font-weight:600;
+  cursor:pointer;
+  list-style:none;
+  position:relative;
+  padding-right:28px;
+}
+
+.faq-box summary::-webkit-details-marker{
+  display:none;
+}
+
+.faq-box summary::after{
+  content:"+";
+  position:absolute;
+  right:0;
+  top:0;
+  font-size:22px;
+  color:#f5b400;
+  font-weight:700;
+}
+
+.faq-box details[open] summary::after{
+  content:"−";
+}
+
+.faq-box p{
+  color:#c8d1dc;
+  font-size:15px;
+  line-height:1.7;
+  margin-top:12px;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media(max-width:768px){
+
+  .faq-title{
+    font-size:26px;
+  }
+
+  .faq-subtitle{
+    font-size:14px;
+  }
+
+  .faq-box summary{
+    font-size:16px;
+  }
+
+  .faq-box p{
+    font-size:14px;
+  }
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:480px){
+
+  .faq-section{
+    padding:45px 12px;
+  }
+
+  .faq-title{
+    font-size:22px;
+  }
+
+  .faq-subtitle{
+    font-size:13px;
+  }
+
+  .faq-box details{
+    padding:14px;
+    border-radius:12px;
+  }
+
+  .faq-box summary{
+    font-size:15px;
+    line-height:1.5;
+  }
+
+  .faq-box p{
+    font-size:13px;
+    line-height:1.6;
+  }
+
+}
+
+
+
+
+
+
+/* Right to Left Gold Shine - 1 Second */
+
+.faq-box details{
+  position:relative;
+  overflow:hidden;
+  transition:0.35s ease;
+}
+
+.faq-box details::before{
+  content:"";
+  position:absolute;
+  top:0;
+  right:-120%;
+  width:60%;
+  height:100%;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,215,0,0.18),
+    rgba(255,215,0,0.45),
+    rgba(255,215,0,0.18),
+    transparent
+  );
+  transform:skewX(-25deg);
+}
+
+.faq-box details:hover::before,
+.faq-box details:active::before{
+  animation:goldSwipeRTL 2s ease forwards;
+}
+
+.faq-box details:hover,
+.faq-box details:active{
+  border-color:#ffd700;
+  box-shadow:0 0 18px rgba(255,215,0,0.35);
+}
+
+@keyframes goldSwipeRTL{
+  from{
+    right:-120%;
+  }
+  to{
+    right:140%;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+h1 {
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.2px;
+  margin: 10px 0;
+
+  background: linear-gradient(
+    90deg,
+    #FFE082 0%,
+    #FFD54F 35%,
+    #FFC107 70%,
+    #FFB300 100%
+);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===================================================
+   ONLY COLORS + BACKGROUND
+   NO LAYOUT CHANGES
+   ADD AT BOTTOM OF CSS
+===================================================
+
+
+/* DASHBOARD TITLE */
+
+.card h2{
+  background:linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #d9d9d9 25%,
+    #8a8a8a 50%,
+    #f5f5f5 75%,
+    #2b2b2b 100%
+  );
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  font-weight:700;
+  letter-spacing:.5px;
+
+  text-shadow:
+    0 0 8px rgba(255,255,255,.15),
+    0 0 18px rgba(255,255,255,.08);
+}
+
+
+/* SYSTEM / USER BUTTONS */
+
+.tab{
+
+  color:#aeb5c2 !important;
+
+  background:
+  linear-gradient(145deg,
+  rgba(5,10,28,.96),
+  rgba(2,6,18,.98)) !important;
+
+  border:1px solid rgba(255,255,255,.04) !important;
+
+  box-shadow:
+  inset 0 1px 0 rgba(255,255,255,.03),
+  0 8px 18px rgba(0,0,0,.28) !important;
+}
+
+
+/* ACTIVE BUTTON */
+
+.tab.active{
+
+  color:#ffe082 !important;
+
+  background:
+  linear-gradient(135deg,
+  #241300 0%,
+  #7a4c00 35%,
+  #ffbf1f 75%,
+  #5c3300 100%) !important;
+
+  border:1px solid rgba(255,220,120,.55) !important;
+
+  box-shadow:
+  0 0 12px rgba(255,190,40,.7),
+  0 0 35px rgba(255,190,40,.22),
+  inset 0 1px 1px rgba(255,255,255,.15) !important;
+}
+
+
+/* INFO BOX COLORS */
+/* ALL INFO CARDS */
+
+/* DARK PREMIUM GOLD INFO CARDS */
+
+#systemBox > div,
+#userBox > div{
+
+  position:relative;
+  overflow:hidden;
+
+  background:
+  linear-gradient(135deg,
+  #050505 0%,
+  #1a0d00 20%,
+  #4d2c00 55%,
+  #8a5a00 78%,
+  #120900 100%) !important;
+
+  border:1px solid rgba(255,210,100,.35) !important;
+
+  border-radius:20px !important;
+
+  box-shadow:
+  0 0 10px rgba(255,170,40,.35),
+  0 0 28px rgba(255,170,40,.12),
+  inset 0 1px 1px rgba(255,255,255,.05),
+  inset 0 -10px 25px rgba(0,0,0,.35) !important;
+
+  color:#ffd76a !important;
+}
+
+
+/* DARK GOLD SHINE */
+
+#systemBox > div::before,
+#userBox > div::before{
+
+  content:'' !important;
+
+  position:absolute;
+  top:-40%;
+  left:-20%;
+
+  width:140%;
+  height:220%;
+
+  background:
+  linear-gradient(
+  120deg,
+  transparent 20%,
+  rgba(255,255,255,.03) 45%,
+  rgba(255,220,120,.12) 50%,
+  rgba(255,255,255,.02) 55%,
+  transparent 80%
+  ) !important;
+
+  transform:rotate(25deg);
+
+  pointer-events:none;
+}
+
+
+/* TITLE TEXT */
+
+#systemBox label,
+#userBox label,
+#systemBox h3,
+#userBox h3{
+
+  color:#ffd76a !important;
+
+  font-weight:600;
+
+  text-shadow:
+  0 0 8px rgba(255,210,120,.18);
+}
+
+
+/* VALUE TEXT */
+
+#systemBox span,
+#userBox span,
+#systemBox p,
+#userBox p{
+
+  color:#ffffff !important;
+
+  font-weight:500;
+
+  text-shadow:
+  0 0 6px rgba(255,255,255,.08);
+}
+
+
+
+
+
+
+.container{
+  padding: 10px 15px;
+}
+
+/* REMOVE EXTRA GAP */
+h1{
+  margin: 0;
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+
+.topbar{
+  margin: 0;
+  margin-bottom: 12px;
+}
+
+.mainBtn{
+  margin: 0;
+}
+
+/* OPTIONAL */
+.chartBox{
+  margin-top: 12px;
+}
+
+
+
+
+
+
+
+
+
+.buy-trc-wrapper{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    padding:0 72px;
+    margin:18px 0;
+    box-sizing:border-box;
+}
+
+.buy-trc-btn{
+    width:100%;
+
+    padding:11px 16px; /* ~30% larger */
+
+    border:none;
+    border-radius:12px;
+
+    text-decoration:none;
+    text-align:center;
+
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:0.5px;
+
+    color:#1a1a1a;
+
+    background:linear-gradient(
+        90deg,
+        #FFE082 0%,
+        #FFD54F 35%,
+        #FFC107 70%,
+        #FFB300 100%
+    );
+
+    box-shadow:
+        0 2px 6px rgba(255,193,7,0.18);
+
+    transition:all .3s ease;
+}
+
+.buy-trc-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:
+        0 4px 10px rgba(255,193,7,0.25);
+}
+
+.buy-trc-btn:active{
+    transform:scale(0.98);
+}
