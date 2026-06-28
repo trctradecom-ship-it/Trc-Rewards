@@ -1,0 +1,13 @@
+{
+  "name": "TRC Exchange",
+  "short_name": "TRC",
+  "icons": [
+    {
+      "src": "trclogo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "display": "standalone"
+}
+ 
