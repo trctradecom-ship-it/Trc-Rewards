@@ -35,7 +35,7 @@ const abi = [
   "function joinLevel5()",
   "function joinLevel6()",
   "function claimReward()",
-  "function getLastEpochRewardSnapshot() view returns(uint256)",
+  "function getLastEpochRewardSnapshot() view returns(uint256,uint256)",
   "event Registered(address indexed user,address indexed referrer)",
   "event LevelJoined(address indexed user,uint8 level,uint256 amount)",
   "event RewardClaimed(address indexed user,uint256 amount)",
