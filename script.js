@@ -3,6 +3,7 @@ let provider;
 let signer;
 let contract;
 let token;
+let usdt;
 let user;
 let chart;
 let epochDurationFromContract = 0;
@@ -13,6 +14,7 @@ let epochStartFromContract = 0;
 // ========================== CONTRACT ADDRESSES ==========================
 const contractAddress = "0x5EFcFE137589990aDD827E1F47cE9900a584Cd7C";
 const tokenAddress = "0xA355D186C6019BE07ED383309FD1d1c194Bfd06F";
+const usdtAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
 
 // ========================== ABI ==========================
 const abi = [
@@ -101,6 +103,7 @@ async function connectWallet() {
     
     contract = new ethers.Contract(contractAddress, abi, signer);
     token = new ethers.Contract(tokenAddress, tokenABI, signer);
+    usdt = new ethers.Contract(usdtAddress, tokenABI, signer);
 
     loadData();
     
@@ -244,6 +247,16 @@ async function approveTRC(){
   const amount = document.getElementById("approveAmount").value;
   const value = ethers.utils.parseUnits(amount,18);
   handleTx(token.approve(contractAddress,value));
+}
+
+async function approveUSDT(){
+  const amount = document.getElementById("approveUSDTAmount").value;
+
+  const value = ethers.utils.parseUnits(amount,6);
+
+  handleTx(
+    usdt.approve(contractAddress, value)
+  );
 }
 
 async function joinLevel(l){
