@@ -547,10 +547,10 @@ grid-template-columns:1fr;
 
 
 h1 {
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 800;
   text-align: center;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   margin: 10px 0;
 
   background: linear-gradient(
