@@ -6,6 +6,7 @@ let token;
 let usdt;
 let user;
 let chart;
+let txFinished = false;
 let epochDurationFromContract = 0;
 // ✅ NEW (epoch)
 let epochStartFromContract = 0;
@@ -212,6 +213,7 @@ function startTimers(){
 }
 // ========================== HANDLE TRANSACTIONS ==========================
 async function handleTx(tx){
+  txFinished = false;
   try{
     // ⏳ waiting wallet confirm
     document.getElementById("status").innerHTML =
@@ -227,9 +229,13 @@ async function handleTx(tx){
 
     await sent.wait();
 
-    // ✅ after confirmed (EVENT WILL UPDATE AFTER THIS)
     document.getElementById("status").innerHTML =
       `<span class="tx-success">✅ Transaction Confirmed</span>`;
+
+    // wait 2 seconds before allowing events
+    setTimeout(()=>{
+      txFinished = true;
+    },2000);
 
   }catch(e){
     document.getElementById("status").innerHTML =
@@ -278,32 +284,82 @@ function listenEvents() {
 
   try {
     contract.on("Registered", (userAddr, referrer) => {
-      if(userAddr.toLowerCase() === user.toLowerCase()){
-        document.getElementById("status").innerText =
-          `Registered successfully with referrer: ${referrer}`;
-        loadData();
-      }
-    });
+    if(userAddr.toLowerCase() === user.toLowerCase()){
 
-   contract.on("LevelJoined", (userAddr, level, trcAmount, usdtAmount) => {
-      if(userAddr.toLowerCase() === user.toLowerCase()){
-        document.getElementById("status").innerText =
-          `Joined Level ${level} successfully with ${human(trcAmount)} TRC and ${Number(ethers.utils.formatUnits(usdtAmount,6)).toFixed(4)} USDT`
+        const showEvent = () => {
+            document.getElementById("status").innerText =
+              `Registered successfully with referrer: ${referrer}`;
+            loadData();
+        };
+
+        if(txFinished){
+            showEvent();
+        }else{
+            const timer = setInterval(()=>{
+                if(txFinished){
+                    clearInterval(timer);
+                    showEvent();
+                }
+            },200);
+        }
+    }
+});
+
+   contract.on("LevelJoined",(userAddr,level,trcAmount,usdtAmount)=>{
+
+    if(userAddr.toLowerCase() !== user.toLowerCase()) return;
+
+    const showEvent = ()=>{
+        document.getElementById("status").innerHTML =
+        `✅ Joined Level ${level}<br>
+         TRC: ${human(trcAmount)}<br>
+         USDT: ${Number(
+            ethers.utils.formatUnits(usdtAmount,6)
+         ).toFixed(4)}`;
+
         loadData();
-      }
-    });
+    };
+
+    if(txFinished){
+        showEvent();
+    }else{
+        const timer = setInterval(()=>{
+            if(txFinished){
+                clearInterval(timer);
+                showEvent();
+            }
+        },200);
+    }
+});
 
    contract.on(
-     "RewardClaimed",
-     (userAddr, trcReward, usdtReward, epoch) => {
-      if(userAddr.toLowerCase() === user.toLowerCase()){
-        document.getElementById("status").innerText =
-          `Reward claimed: ${human(trcReward)} TRC + ${Number(
+  "RewardClaimed",
+  (userAddr,trcReward,usdtReward,epoch)=>{
+
+    if(userAddr.toLowerCase() !== user.toLowerCase()) return;
+
+    const showEvent = ()=>{
+        document.getElementById("status").innerHTML =
+        `✅ Reward Claimed<br>
+         TRC: ${human(trcReward)}<br>
+         USDT: ${Number(
             ethers.utils.formatUnits(usdtReward,6)
-          ).toFixed(4)} USDT`
+         ).toFixed(4)}`;
+
         loadData();
-      }
-    });
+    };
+
+    if(txFinished){
+        showEvent();
+    }else{
+        const timer = setInterval(()=>{
+            if(txFinished){
+                clearInterval(timer);
+                showEvent();
+            }
+        },200);
+    }
+});
 
     contract.on("EMAUpdated", (price) => {
       if(chart){
