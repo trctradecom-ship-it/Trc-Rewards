@@ -13,7 +13,7 @@ let epochStartFromContract = 0;
 
 
 // ========================== CONTRACT ADDRESSES ==========================
-const contractAddress = "0x5EFcFE137589990aDD827E1F47cE9900a584Cd7C";
+const contractAddress = "0x90789d75566f6475b6Ea4cbcCF29C7e8F6cE399D";
 const tokenAddress = "0xA355D186C6019BE07ED383309FD1d1c194Bfd06F";
 const usdtAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
 
