@@ -39,8 +39,8 @@ const abi = [
   "function claimReward()",
   "function getLastEpochRewardSnapshot() view returns(uint256,uint256)",
   "event Registered(address indexed user,address indexed referrer)",
-  "event LevelJoined(address indexed user,uint8 level,uint256 amount)",
-  "event RewardClaimed(address indexed user,uint256 amount)",
+  "event LevelJoined(address indexed user,uint8 level,uint256 amount,uint256 usdtAmount)",
+  "event RewardClaimed(address indexed user,uint256 trcReward,uint256 usdtReward,uint256 epoch)",
   "event EMAUpdated(uint256 price)"
 ];
 
@@ -285,18 +285,22 @@ function listenEvents() {
       }
     });
 
-    contract.on("LevelJoined", (userAddr, level, amount) => {
+   contract.on("LevelJoined", (userAddr, level, trcAmount, usdtAmount) => {
       if(userAddr.toLowerCase() === user.toLowerCase()){
         document.getElementById("status").innerText =
-          `Joined Level ${level} successfully with ${human(amount)} TRC`;
+          `Joined Level ${level} successfully with ${human(trcAmount)} TRC and ${Number(ethers.utils.formatUnits(usdtAmount,6)).toFixed(4)} USDT`
         loadData();
       }
     });
 
-    contract.on("RewardClaimed", (userAddr, amount) => {
+   contract.on(
+     "RewardClaimed",
+     (userAddr, trcReward, usdtReward, epoch) => {
       if(userAddr.toLowerCase() === user.toLowerCase()){
         document.getElementById("status").innerText =
-          `Reward claimed: ${human(amount)} TRC`;
+          `Reward claimed: ${human(trcReward)} TRC + ${Number(
+            ethers.utils.formatUnits(usdtReward,6)
+          ).toFixed(4)} USDT`
         loadData();
       }
     });
