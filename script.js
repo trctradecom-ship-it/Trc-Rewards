@@ -21,10 +21,11 @@ const abi = [
   "function getEpochDuration() view returns(uint256)",
   "function downlineCount(address) view returns(uint256)",
   "function epochTotalWeight() view returns(uint256)",
-  "function pendingReward(address) view returns(uint256)",
+  "function pendingReward(address) view returns(uint256,uint256)",
   "function getTRCPriceUSD() view returns(uint256)",
   "function totalWeight() view returns(uint256)",
-  "function rewardPool() view returns(uint256)",
+  "function rewardPoolTRC() view returns(uint256)",
+  "function rewardPoolUSDT() view returns(uint256)",
   "function users(address) view returns(address,uint8,uint256,uint256,uint256,uint256,uint256)",
   "function register(address)",
   "function joinLevel1()",
@@ -129,14 +130,26 @@ async function loadData(){
     }
 
     // ✅ SYSTEM DATA ONLY
-    document.getElementById("epoch").innerText =
-      await contract.currentEpoch();
+   document.getElementById("epoch").innerText =
+     await contract.currentEpoch();
 
-    document.getElementById("pending").innerText =
-      human(await contract.pendingReward(user));
+   const rewards = await contract.pendingReward(user);
 
-    document.getElementById("rewardPool").innerText =
-      human(await contract.rewardPool());
+   document.getElementById("pendingTRC").innerText =
+     human(rewards[0]);
+
+   document.getElementById("pendingUSDT").innerText =
+     Number(ethers.utils.formatUnits(rewards[1],6)).toFixed(4);
+
+
+   const rewardPoolTRC = await contract.rewardPoolTRC();
+   const rewardPoolUSDT = await contract.rewardPoolUSDT();
+
+   document.getElementById("rewardPoolTRC").innerText =
+     human(rewardPoolTRC);
+
+   document.getElementById("rewardPoolUSDT").innerText =
+     Number(ethers.utils.formatUnits(rewardPoolUSDT,6)).toFixed(4);
 
     
 
@@ -310,40 +323,48 @@ window.onload = function(){
 
 // ========================== REWARD CALCULATOR ==========================
 function calculateReward(){
-  
-  // Auto fill from dashboard
 
-  document.getElementById("calcBaseWeight").value =
-    document.getElementById("baseWeight").innerText;
+    document.getElementById("calcBaseWeight").value =
+        document.getElementById("baseWeight").innerText;
 
-  document.getElementById("calcTempWeight").value =
-    document.getElementById("tempWeight").innerText;
+    document.getElementById("calcTempWeight").value =
+        document.getElementById("tempWeight").innerText;
 
-  // ✅ FIXED HERE (use epochWeight)
+    document.getElementById("calcTotalWeight").value =
+        document.getElementById("epochWeight").innerText;
 
-  document.getElementById("calcTotalWeight").value =
-    document.getElementById("epochWeight").innerText;
+    const poolTRC = parseFloat(
+        document.getElementById("lastEpochRewardTRC").innerText
+    ) || 0;
 
-  document.getElementById("pool").value =
-    document.getElementById("lastEpochReward").innerText;
+    const poolUSDT = parseFloat(
+        document.getElementById("lastEpochRewardUSDT").innerText
+    ) || 0;
 
-  let pool = parseFloat(document.getElementById("pool").value);
-  let base = parseFloat(document.getElementById("calcBaseWeight").value) || 0;
-  let temp = parseFloat(document.getElementById("calcTempWeight").value) || 0;
-  let total = parseFloat(document.getElementById("calcTotalWeight").value);
+    const base =
+        parseFloat(document.getElementById("calcBaseWeight").value) || 0;
 
-  let userWeight = base + temp;
+    const temp =
+        parseFloat(document.getElementById("calcTempWeight").value) || 0;
 
-  if(total === 0){
-    document.getElementById("rewardResult").innerHTML =
-      "⚠️ No participants yet";
-    return;
-  }
+    const total =
+        parseFloat(document.getElementById("calcTotalWeight").value) || 0;
 
-  let reward = (pool * userWeight) / total;
+    const userWeight = base + temp;
 
-  document.getElementById("rewardResult").innerHTML =
-    `Estimated Reward: ${reward.toFixed(4)} TRC`;
+    if(total === 0){
+        document.getElementById("rewardResult").innerHTML =
+            "⚠️ No participants yet";
+        return;
+    }
+
+    const trcReward = (poolTRC * userWeight) / total;
+    const usdtReward = (poolUSDT * userWeight) / total;
+
+    document.getElementById("rewardResult").innerHTML = `
+        Estimated TRC Reward: ${trcReward.toFixed(4)} TRC<br>
+        Estimated USDT Reward: ${usdtReward.toFixed(4)} USDT
+    `;
 }
 
 
@@ -365,8 +386,11 @@ async function showSystem(){
   // ✅ LOADING STATE
   document.getElementById("price").innerText = "⏳ Loading...";
   document.getElementById("epoch").innerText = "⏳ Loading...";
-  document.getElementById("pending").innerText = "⏳ Loading...";
-  document.getElementById("rewardPool").innerText = "⏳ Loading...";
+  document.getElementById("pendingTRC").innerText = "⏳ Loading...";
+  document.getElementById("pendingUSDT").innerText = "⏳ Loading...";
+
+  document.getElementById("rewardPoolTRC").innerText = "⏳ Loading...";
+  document.getElementById("rewardPoolUSDT").innerText = "⏳ Loading...";
   document.getElementById("epochWeight").innerText = "⏳ Loading...";
   document.getElementById("epochStart").innerText = "⏳ Loading...";
   document.getElementById("nextEpoch").innerText = "⏳ Loading...";
@@ -420,8 +444,13 @@ async function loadUserData(){
     document.getElementById("downline").innerText =
       await contract.downlineCount(user);
 
-    const lastSnapshot = await contract.getLastEpochRewardSnapshot();
-    document.getElementById("lastEpochReward").innerText = human(lastSnapshot);
+    const snapshot = await contract.getLastEpochRewardSnapshot();
+
+   document.getElementById("lastEpochRewardTRC").innerText =
+      human(snapshot[0]);
+
+   document.getElementById("lastEpochRewardUSDT").innerText =
+      Number(ethers.utils.formatUnits(snapshot[1],6)).toFixed(4);
 
     document.getElementById("epochWeight").innerText =
       await contract.epochTotalWeight();
