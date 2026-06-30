@@ -300,7 +300,7 @@ function listenEvents() {
                     clearInterval(timer);
                     showEvent();
                 }
-            },200);
+            },500);
         }
     }
 });
@@ -328,7 +328,7 @@ function listenEvents() {
                 clearInterval(timer);
                 showEvent();
             }
-        },200);
+        },500);
     }
 });
 
@@ -357,7 +357,7 @@ function listenEvents() {
                 clearInterval(timer);
                 showEvent();
             }
-        },200);
+        },500);
     }
 });
 
