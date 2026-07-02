@@ -839,28 +839,46 @@ h1{
 
 
 /* Highlight Register Card */
+/* Premium Register Card */
+
 .register-card{
-    border:3px solid #FFD700;
-    border-radius:15px;
+    border: 2px solid rgba(255,215,0,.45);
+    border-radius: 15px;
+    background: #020617;
+
     box-shadow:
-        0 0 12px #FFD700,
-        0 0 25px rgba(255,215,0,.7),
-        0 0 40px rgba(255,215,0,.4);
-    animation:registerGlow 1.5s ease-in-out infinite alternate;
+        0 0 8px rgba(255,215,0,.10),
+        0 0 20px rgba(255,215,0,.08);
+
+    animation: premiumGlow 5s ease-in-out infinite;
 }
 
+/* Keep Register title normal */
 .register-card h2{
-    color:#FFD700;
-    text-shadow:0 0 10px #FFD700;
+    color: inherit !important;
+    text-shadow: none !important;
 }
 
-@keyframes registerGlow{
-    from{
-        box-shadow:0 0 10px #FFD700;
-    }
-    to{
+@keyframes premiumGlow{
+
+    0%{
+        border-color: rgba(255,215,0,.30);
         box-shadow:
-            0 0 20px #FFD700,
-            0 0 40px rgba(255,215,0,.9);
+            0 0 8px rgba(255,215,0,.08),
+            0 0 18px rgba(255,215,0,.06);
+    }
+
+    50%{
+        border-color: rgba(255,215,0,.55);
+        box-shadow:
+            0 0 14px rgba(255,215,0,.18),
+            0 0 28px rgba(255,215,0,.12);
+    }
+
+    100%{
+        border-color: rgba(255,215,0,.30);
+        box-shadow:
+            0 0 8px rgba(255,215,0,.08),
+            0 0 18px rgba(255,215,0,.06);
     }
 }
