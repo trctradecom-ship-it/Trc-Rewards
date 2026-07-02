@@ -839,36 +839,28 @@ h1{
 
 
 /* Highlight Register Card */
-/* ===== Highlight Register Card ===== */
-.container > .card:nth-of-type(2){
-    position: relative;
-    border: 3px solid #FFD700 !important;
-    border-radius: 18px;
-    background: #0b1020;
+.register-card{
+    border:3px solid #FFD700;
+    border-radius:15px;
     box-shadow:
         0 0 12px #FFD700,
         0 0 25px rgba(255,215,0,.7),
-        0 0 45px rgba(255,215,0,.4);
-    animation: registerGlow 1.5s ease-in-out infinite alternate;
+        0 0 40px rgba(255,215,0,.4);
+    animation:registerGlow 1.5s ease-in-out infinite alternate;
 }
 
-.container > .card:nth-of-type(2) h2{
+.register-card h2{
     color:#FFD700;
-    text-shadow:
-        0 0 10px #FFD700,
-        0 0 20px #FFD700;
+    text-shadow:0 0 10px #FFD700;
 }
 
 @keyframes registerGlow{
     from{
-        box-shadow:
-            0 0 10px #FFD700,
-            0 0 20px rgba(255,215,0,.5);
+        box-shadow:0 0 10px #FFD700;
     }
     to{
         box-shadow:
             0 0 20px #FFD700,
-            0 0 40px rgba(255,215,0,.9),
-            0 0 60px rgba(255,215,0,.5);
+            0 0 40px rgba(255,215,0,.9);
     }
 }
