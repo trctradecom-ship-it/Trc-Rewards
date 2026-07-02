@@ -832,3 +832,34 @@ h1{
 .buy-trc-btn:active{
     transform:scale(0.98);
 }
+
+
+
+
+
+
+/* Highlight Register Card */
+.card:first-of-type{
+    border: 2px solid #FFD700;
+    border-radius: 18px;
+    box-shadow:
+        0 0 12px rgba(255,215,0,.7),
+        0 0 25px rgba(255,193,7,.45),
+        inset 0 0 8px rgba(255,215,0,.15);
+    animation: registerGlow 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes registerGlow{
+    from{
+        box-shadow:
+            0 0 10px rgba(255,215,0,.5),
+            0 0 20px rgba(255,193,7,.3),
+            inset 0 0 6px rgba(255,215,0,.1);
+    }
+    to{
+        box-shadow:
+            0 0 20px rgba(255,215,0,.9),
+            0 0 40px rgba(255,193,7,.6),
+            inset 0 0 12px rgba(255,215,0,.2);
+    }
+}
