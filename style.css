@@ -839,27 +839,36 @@ h1{
 
 
 /* Highlight Register Card */
-.card:first-of-type{
-    border: 2px solid #FFD700;
+/* ===== Highlight Register Card ===== */
+.container > .card:nth-of-type(2){
+    position: relative;
+    border: 3px solid #FFD700 !important;
     border-radius: 18px;
+    background: #0b1020;
     box-shadow:
-        0 0 12px rgba(255,215,0,.7),
-        0 0 25px rgba(255,193,7,.45),
-        inset 0 0 8px rgba(255,215,0,.15);
-    animation: registerGlow 1.8s ease-in-out infinite alternate;
+        0 0 12px #FFD700,
+        0 0 25px rgba(255,215,0,.7),
+        0 0 45px rgba(255,215,0,.4);
+    animation: registerGlow 1.5s ease-in-out infinite alternate;
+}
+
+.container > .card:nth-of-type(2) h2{
+    color:#FFD700;
+    text-shadow:
+        0 0 10px #FFD700,
+        0 0 20px #FFD700;
 }
 
 @keyframes registerGlow{
     from{
         box-shadow:
-            0 0 10px rgba(255,215,0,.5),
-            0 0 20px rgba(255,193,7,.3),
-            inset 0 0 6px rgba(255,215,0,.1);
+            0 0 10px #FFD700,
+            0 0 20px rgba(255,215,0,.5);
     }
     to{
         box-shadow:
-            0 0 20px rgba(255,215,0,.9),
-            0 0 40px rgba(255,193,7,.6),
-            inset 0 0 12px rgba(255,215,0,.2);
+            0 0 20px #FFD700,
+            0 0 40px rgba(255,215,0,.9),
+            0 0 60px rgba(255,215,0,.5);
     }
 }
