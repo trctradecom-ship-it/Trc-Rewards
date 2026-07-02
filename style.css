@@ -901,7 +901,7 @@ h1{
         0 0 45px rgba(255,215,0,.18),
         0 0 70px rgba(255,215,0,.10);
 
-    animation: premiumGlow 5s ease-in-out infinite;
+    animation: premiumGlow 6s ease-in-out infinite;
 }
 
 @keyframes premiumGlow{
