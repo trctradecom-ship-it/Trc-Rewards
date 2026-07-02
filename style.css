@@ -838,53 +838,6 @@ h1{
 
 
 
-/* Highlight Register Card */
-/* Premium Register Card */
-
-.register-card{
-    border: 2px solid rgba(255,215,0,.45);
-    border-radius: 15px;
-    background: #020617;
-
-    box-shadow:
-    0 0 12px rgba(255,215,0,.18),
-    0 0 26px rgba(255,215,0,.12),
-    0 0 40px rgba(255,215,0,.08);
-
-    animation: premiumGlow 6s ease-in-out infinite;
-
-/* Keep Register title normal */
-.register-card h2{
-    color: inherit !important;
-    text-shadow: none !important;
-}
-
-@keyframes premiumGlow{
-
-    0%{
-        border-color: rgba(255,215,0,.30);
-        box-shadow:
-            0 0 8px rgba(255,215,0,.08),
-            0 0 18px rgba(255,215,0,.06);
-    }
-
-    50%{
-        border-color: rgba(255,215,0,.55);
-        box-shadow:
-            0 0 18px rgba(255,215,0,.30),
-            0 0 36px rgba(255,215,0,.18),
-            0 0 60px rgba(255,215,0,.10);
-    }
-
-    100%{
-        border-color: rgba(255,215,0,.30);
-        box-shadow:
-            0 0 8px rgba(255,215,0,.08),
-            0 0 18px rgba(255,215,0,.06);
-    }
-}
-
-
 
 
 
