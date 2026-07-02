@@ -847,8 +847,9 @@ h1{
     background: #020617;
 
     box-shadow:
-        0 0 8px rgba(255,215,0,.10),
-        0 0 20px rgba(255,215,0,.08);
+    0 0 12px rgba(255,215,0,.18),
+    0 0 26px rgba(255,215,0,.12),
+    0 0 40px rgba(255,215,0,.08);
 
     animation: premiumGlow 5s ease-in-out infinite;
 }
@@ -871,8 +872,9 @@ h1{
     50%{
         border-color: rgba(255,215,0,.55);
         box-shadow:
-            0 0 14px rgba(255,215,0,.18),
-            0 0 28px rgba(255,215,0,.12);
+    0 0 18px rgba(255,215,0,.30),
+    0 0 36px rgba(255,215,0,.18),
+    0 0 60px rgba(255,215,0,.10);
     }
 
     100%{
