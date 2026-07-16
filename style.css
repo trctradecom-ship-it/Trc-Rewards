@@ -892,33 +892,27 @@ h1{
 
 
 
-/*=============================
+/*=========================================
 LEADERBOARD
-=============================*/
+=========================================*/
 
 .leaderboard-card{
 
     width:100%;
-
-    margin-top:25px;
-
+    max-width:1200px;
+    margin:25px auto;
     background:#070b22;
-
     border-radius:18px;
-
     padding:20px;
-
     border:1px solid rgba(255,215,0,.12);
-
-    box-shadow:
-    0 0 30px rgba(255,180,0,.08);
+    box-shadow:0 0 30px rgba(255,180,0,.08);
+    box-sizing:border-box;
 
 }
 
 .leader-header{
 
     text-align:center;
-
     margin-bottom:20px;
 
 }
@@ -926,11 +920,8 @@ LEADERBOARD
 .leader-header h2{
 
     margin:0;
-
     color:#FFD700;
-
     font-size:30px;
-
     font-weight:700;
 
 }
@@ -938,115 +929,115 @@ LEADERBOARD
 .leader-subtitle{
 
     color:#aaa;
-
-    margin-top:5px;
+    margin-top:6px;
+    font-size:15px;
 
 }
 
 #leaderboard{
 
     display:flex;
-
     flex-direction:column;
-
     gap:15px;
 
 }
 
-/*========================*/
+/*=========================================
+ITEM
+=========================================*/
 
 .leader-item{
 
     display:flex;
-
     align-items:center;
-
     justify-content:space-between;
-
     gap:15px;
-
+    width:100%;
     padding:18px;
-
     border-radius:14px;
-
     background:#11182d;
-
     border:1px solid rgba(255,255,255,.08);
-
     transition:.35s;
+    box-sizing:border-box;
+    overflow:hidden;
 
 }
 
 .leader-item:hover{
 
-    transform:translateY(-2px);
+    transform:translateY(-3px);
 
 }
 
-/*========================*/
+/*=========================================
+RANK
+=========================================*/
 
 .leader-rank{
 
-    width:55px;
-
-    height:55px;
-
+    width:58px;
+    height:58px;
+    min-width:58px;
     border-radius:50%;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
-    font-size:24px;
-
-    font-weight:bold;
-
     background:#1b2238;
+    font-size:26px;
+    font-weight:bold;
+    flex-shrink:0;
 
 }
 
-/*========================*/
+/*=========================================
+CENTER
+=========================================*/
 
 .leader-center{
 
     flex:1;
+    min-width:0;
 
 }
 
 .leader-name{
 
-    font-size:20px;
-
     color:#fff;
-
+    font-size:20px;
     font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 
 }
 
 .leader-wallet{
 
-    margin-top:4px;
-
+    margin-top:5px;
     color:#888;
-
     font-size:13px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 
 }
+
+/*=========================================
+RIGHT
+=========================================*/
 
 .leader-right{
 
     text-align:right;
+    min-width:130px;
+    flex-shrink:0;
 
 }
 
 .leader-trc{
 
     color:#FFD700;
-
-    font-size:18px;
-
+    font-size:19px;
     font-weight:bold;
 
 }
@@ -1054,21 +1045,19 @@ LEADERBOARD
 .leader-usdt{
 
     margin-top:6px;
-
     color:#59ff7f;
-
     font-size:15px;
+    font-weight:600;
 
 }
 
-/*=========================
+/*=========================================
 TOP 1
-=========================*/
+=========================================*/
 
 .gold{
 
-    background:
-    linear-gradient(
+    background:linear-gradient(
     135deg,
     #3d2900,
     #8a5a00,
@@ -1083,9 +1072,7 @@ TOP 1
 .gold .leader-rank{
 
     background:gold;
-
     color:#111;
-
     font-size:30px;
 
 }
@@ -1096,15 +1083,13 @@ TOP 1
 
 }
 
-/*=========================
-TOP2
-=========================*/
+/*=========================================
+TOP 2
+=========================================*/
 
 .silver{
 
-    background:
-
-    linear-gradient(
+    background:linear-gradient(
     135deg,
     #454545,
     #7e7e7e,
@@ -1114,21 +1099,25 @@ TOP2
 
 }
 
-.silver .leader-name{
+.silver .leader-rank{
 
-    color:white;
+    background:#202848;
 
 }
 
-/*=========================
-TOP3
-=========================*/
+.silver .leader-name{
+
+    color:#fff;
+
+}
+
+/*=========================================
+TOP 3
+=========================================*/
 
 .bronze{
 
-    background:
-
-    linear-gradient(
+    background:linear-gradient(
     135deg,
     #5b3314,
     #9d5c1d,
@@ -1138,68 +1127,48 @@ TOP3
 
 }
 
+.bronze .leader-rank{
+
+    background:#4b2c18;
+
+}
+
 .bronze .leader-name{
 
     color:#ffcb94;
 
 }
 
-/*========================*/
+/*=========================================
+ANIMATION
+=========================================*/
 
 @keyframes goldGlow{
 
 0%{
 
-box-shadow:
-
-0 0 10px rgba(255,215,0,.3);
+box-shadow:0 0 10px rgba(255,215,0,.35);
 
 }
 
 100%{
 
 box-shadow:
-
-0 0 30px rgba(255,215,0,.9);
-
-}
+0 0 35px rgba(255,215,0,.95);
 
 }
 
-/*========================*/
-
-.leader-loading{
-
-    text-align:center;
-
-    color:#FFD700;
-
-    padding:30px;
-
 }
 
-.leader-empty{
-
-    text-align:center;
-
-    color:#888;
-
-    padding:30px;
-
-}
-
-/*=========================
-KING BADGE
-=========================*/
+/*=========================================
+KING
+=========================================*/
 
 .king{
 
     color:gold;
-
     margin-left:8px;
-
-    font-size:24px;
-
+    font-size:22px;
     animation:king 1.5s infinite;
 
 }
@@ -1226,49 +1195,214 @@ transform:translateY(0);
 
 }
 
-/*=========================
-MOBILE
-=========================*/
+/*=========================================
+LOADING
+=========================================*/
 
-@media(max-width:700px){
+.leader-loading{
 
-.leader-item{
-
-padding:15px;
-
-}
-
-.leader-name{
-
-font-size:17px;
+    text-align:center;
+    color:#FFD700;
+    padding:30px;
+    font-size:18px;
 
 }
 
-.leader-trc{
+.leader-empty{
 
-font-size:16px;
-
-}
-
-.leader-usdt{
-
-font-size:13px;
+    text-align:center;
+    color:#888;
+    padding:30px;
+    font-size:17px;
 
 }
 
-.leader-rank{
+/*=========================================
+TABLET
+=========================================*/
 
-width:48px;
+@media(max-width:900px){
 
-height:48px;
+.leaderboard-card{
 
-font-size:20px;
+padding:18px;
 
 }
 
 .leader-header h2{
 
+font-size:26px;
+
+}
+
+.leader-name{
+
+font-size:18px;
+
+}
+
+.leader-trc{
+
+font-size:17px;
+
+}
+
+}
+
+/*=========================================
+MOBILE
+=========================================*/
+
+@media(max-width:700px){
+
+.leaderboard-card{
+
+padding:14px;
+margin:18px auto;
+border-radius:14px;
+
+}
+
+.leader-header{
+
+margin-bottom:16px;
+
+}
+
+.leader-header h2{
+
+font-size:22px;
+
+}
+
+.leader-subtitle{
+
+font-size:13px;
+
+}
+
+.leader-item{
+
+padding:14px;
+gap:10px;
+border-radius:12px;
+
+}
+
+.leader-rank{
+
+width:46px;
+height:46px;
+min-width:46px;
+font-size:20px;
+
+}
+
+.gold .leader-rank{
+
 font-size:24px;
+
+}
+
+.leader-name{
+
+font-size:16px;
+
+}
+
+.leader-wallet{
+
+font-size:11px;
+
+}
+
+.leader-right{
+
+min-width:92px;
+
+}
+
+.leader-trc{
+
+font-size:15px;
+
+}
+
+.leader-usdt{
+
+font-size:12px;
+
+}
+
+}
+
+/*=========================================
+SMALL MOBILE
+=========================================*/
+
+@media(max-width:480px){
+
+.leaderboard-card{
+
+padding:12px;
+
+}
+
+.leader-header h2{
+
+font-size:20px;
+
+}
+
+.leader-item{
+
+padding:12px;
+gap:8px;
+
+}
+
+.leader-rank{
+
+width:40px;
+height:40px;
+min-width:40px;
+font-size:18px;
+
+}
+
+.gold .leader-rank{
+
+font-size:20px;
+
+}
+
+.leader-name{
+
+font-size:14px;
+
+}
+
+.leader-wallet{
+
+font-size:10px;
+
+}
+
+.leader-right{
+
+min-width:82px;
+
+}
+
+.leader-trc{
+
+font-size:13px;
+
+}
+
+.leader-usdt{
+
+font-size:11px;
 
 }
 
