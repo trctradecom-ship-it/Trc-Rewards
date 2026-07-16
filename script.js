@@ -885,7 +885,7 @@ function renderLeaderboard(data){
 
         if(i===0){
 
-            medal = "👑";
+            medal="🥇";
             cls+=" gold";
 
         }
