@@ -597,114 +597,116 @@ async function loadLeaderboard(){
 
         leaderboard = [];
 
-        const currentEpoch = Number(
-            await contract.currentEpoch()
-        );
+        const currentEpoch = Number(await contract.currentEpoch());
 
         const lastEpoch = currentEpoch - 1;
 
         if(lastEpoch < 1){
-
             renderLeaderboard([]);
-
             return;
-
         }
 
         document.getElementById("leaderboard").innerHTML =
         "<div class='leader-loading'>Loading leaderboard...</div>";
 
-        const filter =
-            contract.filters.RewardClaimed();
+        const filter = contract.filters.RewardClaimed();
 
-        const events =
-            await contract.queryFilter(
-                filter,
-                0,
-                "latest"
-            );
+        const latestBlock = await provider.getBlockNumber();
+
+        const fromBlock = Math.max(0, latestBlock - 100000);
+
+       const events = await contract.queryFilter(
+         filter,
+         fromBlock,
+         latestBlock
+       );
+
+       console.log("Latest Block:", latestBlock);
+       console.log("From Block:", fromBlock);
+       console.log("Events Found:", events.length);
+
+        console.log("Events Found :", events.length);
+
+        const users = {};
 
         for(const e of events){
 
-            const epoch =
-                Number(e.args.epoch);
+            const epoch = e.args.epoch.toNumber();
 
-            if(epoch !== lastEpoch)
+            if(epoch !== lastEpoch) continue;
+
+            const wallet = e.args.user;
+
+            const trc = Number(
+                ethers.utils.formatUnits(
+                    e.args.trcReward,
+                    18
+                )
+            );
+
+            const usdt = Number(
+                ethers.utils.formatUnits(
+                    e.args.usdtReward,
+                    6
+                )
+            );
+
+            if(users[wallet]){
+                users[wallet].trc += trc;
+                users[wallet].usdt += usdt;
                 continue;
-
-            const wallet =
-                e.args.user;
-
-            const trc =
-                parseFloat(
-                    ethers.utils.formatUnits(
-                        e.args.trcReward,
-                        18
-                    )
-                );
-
-            const usdt =
-                parseFloat(
-                    ethers.utils.formatUnits(
-                        e.args.usdtReward,
-                        6
-                    )
-                );
+            }
 
             let username = "";
 
             try{
-
-                username =
-                    await usernameContract.getUsername(wallet);
-
+                username = await usernameContract.getUsername(wallet);
             }catch(err){
-
                 username = "";
-
             }
 
-            if(username==""){
-
+            if(!username || username.trim()==""){
                 username =
                     wallet.substring(0,6)
                     +"..."
-                    +wallet.substring(38);
-
+                    +wallet.substring(wallet.length-4);
             }
 
-            leaderboard.push({
-
-                wallet:wallet,
-
-                username:username,
-
-                trc:trc,
-
-                usdt:usdt
-
-            });
+            users[wallet]={
+                wallet,
+                username,
+                trc,
+                usdt
+            };
 
         }
 
-        leaderboard.sort(
+        leaderboard = Object.values(users);
 
-            (a,b)=>b.trc-a.trc
+        leaderboard.sort((a,b)=>{
 
-        );
+            if(b.trc!==a.trc)
+                return b.trc-a.trc;
+
+            return b.usdt-a.usdt;
+
+        });
+
+        console.log(leaderboard);
 
         renderLeaderboard(leaderboard);
 
-    }catch(err){
+    }
+    catch(err){
 
-        console.log(err);
+        console.error(err);
+
+        document.getElementById("leaderboard").innerHTML =
+        "<div class='leader-loading'>Failed to load leaderboard</div>";
 
     }
 
 }
-
-
-
 
 
 
