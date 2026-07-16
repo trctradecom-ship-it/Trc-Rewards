@@ -877,3 +877,399 @@ h1{
             0 0 110px rgba(255,215,0,.08);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*=============================
+LEADERBOARD
+=============================*/
+
+.leaderboard-card{
+
+    width:100%;
+
+    margin-top:25px;
+
+    background:#070b22;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    border:1px solid rgba(255,215,0,.12);
+
+    box-shadow:
+    0 0 30px rgba(255,180,0,.08);
+
+}
+
+.leader-header{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+}
+
+.leader-header h2{
+
+    margin:0;
+
+    color:#FFD700;
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+.leader-subtitle{
+
+    color:#aaa;
+
+    margin-top:5px;
+
+}
+
+#leaderboard{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+/*========================*/
+
+.leader-item{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:#11182d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.35s;
+
+}
+
+.leader-item:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/*========================*/
+
+.leader-rank{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    background:#1b2238;
+
+}
+
+/*========================*/
+
+.leader-center{
+
+    flex:1;
+
+}
+
+.leader-name{
+
+    font-size:20px;
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+.leader-wallet{
+
+    margin-top:4px;
+
+    color:#888;
+
+    font-size:13px;
+
+}
+
+.leader-right{
+
+    text-align:right;
+
+}
+
+.leader-trc{
+
+    color:#FFD700;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+.leader-usdt{
+
+    margin-top:6px;
+
+    color:#59ff7f;
+
+    font-size:15px;
+
+}
+
+/*=========================
+TOP 1
+=========================*/
+
+.gold{
+
+    background:
+    linear-gradient(
+    135deg,
+    #3d2900,
+    #8a5a00,
+    #3d2900);
+
+    border:2px solid gold;
+
+    animation:goldGlow 2s infinite alternate;
+
+}
+
+.gold .leader-rank{
+
+    background:gold;
+
+    color:#111;
+
+    font-size:30px;
+
+}
+
+.gold .leader-name{
+
+    color:gold;
+
+}
+
+/*=========================
+TOP2
+=========================*/
+
+.silver{
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #454545,
+    #7e7e7e,
+    #454545);
+
+    border:2px solid silver;
+
+}
+
+.silver .leader-name{
+
+    color:white;
+
+}
+
+/*=========================
+TOP3
+=========================*/
+
+.bronze{
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #5b3314,
+    #9d5c1d,
+    #5b3314);
+
+    border:2px solid #c07b3f;
+
+}
+
+.bronze .leader-name{
+
+    color:#ffcb94;
+
+}
+
+/*========================*/
+
+@keyframes goldGlow{
+
+0%{
+
+box-shadow:
+
+0 0 10px rgba(255,215,0,.3);
+
+}
+
+100%{
+
+box-shadow:
+
+0 0 30px rgba(255,215,0,.9);
+
+}
+
+}
+
+/*========================*/
+
+.leader-loading{
+
+    text-align:center;
+
+    color:#FFD700;
+
+    padding:30px;
+
+}
+
+.leader-empty{
+
+    text-align:center;
+
+    color:#888;
+
+    padding:30px;
+
+}
+
+/*=========================
+KING BADGE
+=========================*/
+
+.king{
+
+    color:gold;
+
+    margin-left:8px;
+
+    font-size:24px;
+
+    animation:king 1.5s infinite;
+
+}
+
+@keyframes king{
+
+0%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-4px);
+
+}
+
+100%{
+
+transform:translateY(0);
+
+}
+
+}
+
+/*=========================
+MOBILE
+=========================*/
+
+@media(max-width:700px){
+
+.leader-item{
+
+padding:15px;
+
+}
+
+.leader-name{
+
+font-size:17px;
+
+}
+
+.leader-trc{
+
+font-size:16px;
+
+}
+
+.leader-usdt{
+
+font-size:13px;
+
+}
+
+.leader-rank{
+
+width:48px;
+
+height:48px;
+
+font-size:20px;
+
+}
+
+.leader-header h2{
+
+font-size:24px;
+
+}
+
+}
