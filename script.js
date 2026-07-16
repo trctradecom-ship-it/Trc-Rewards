@@ -585,8 +585,10 @@ function copyRef(){
 
 
 
+
+
 // =========================================
-// LOAD LAST EPOCH LEADERBOARD
+// LOAD LAST EPOCH LEADERBOARD (FAST)
 // =========================================
 
 async function loadLeaderboard(){
@@ -598,125 +600,243 @@ async function loadLeaderboard(){
         leaderboard = [];
 
         document.getElementById("leaderboard").innerHTML =
-        "<div class='leader-loading'>Loading leaderboard...</div>";
+        "<div class='leader-loading'>Loading Leaderboard...</div>";
 
-        const currentEpoch = Number(await contract.currentEpoch());
+        const currentEpoch = Number(
+            await contract.currentEpoch()
+        );
 
         const lastEpoch = currentEpoch - 1;
 
         if(lastEpoch < 1){
+
             renderLeaderboard([]);
+
             return;
+
         }
 
+        // CHANGE ONLY THIS IF CONTRACT DEPLOY BLOCK CHANGES
         const DEPLOY_BLOCK = 89400917;
 
-        const latestBlock = await provider.getBlockNumber();
+        const latestBlock =
+            await provider.getBlockNumber();
 
-        const filter = contract.filters.RewardClaimed();
+        const filter =
+            contract.filters.RewardClaimed();
 
-        let events = [];
+        // ==========================
+        // LOAD EVENTS IN PARALLEL
+        // ==========================
 
-        for(let from = DEPLOY_BLOCK; from <= latestBlock; from += 9000){
+        const requests = [];
 
-            const to = Math.min(from + 8999, latestBlock);
+        for(
+            let from = DEPLOY_BLOCK;
+            from <= latestBlock;
+            from += 9000
+        ){
 
-            const part = await contract.queryFilter(
-                filter,
-                from,
-                to
+            const to =
+                Math.min(from + 8999, latestBlock);
+
+            requests.push(
+
+                contract.queryFilter(
+                    filter,
+                    from,
+                    to
+                )
+
             );
 
-            events.push(...part);
         }
 
-        console.log("Events Found:", events.length);
+        const results =
+            await Promise.all(requests);
+
+        const events = results.flat();
+
+        console.log(
+            "RewardClaimed Events:",
+            events.length
+        );
+
+        // ==========================
+        // BUILD USER DATA
+        // ==========================
 
         const users = {};
 
         for(const e of events){
 
-            const epoch = Number(e.args.epoch);
-
-            if(epoch !== lastEpoch) continue;
+            if(Number(e.args.epoch) !== lastEpoch)
+                continue;
 
             const wallet = e.args.user;
 
-            const trc = Number(
+            if(!users[wallet]){
+
+                users[wallet] = {
+
+                    wallet: wallet,
+
+                    username: "",
+
+                    trc: 0,
+
+                    usdt: 0
+
+                };
+
+            }
+
+            users[wallet].trc += Number(
+
                 ethers.utils.formatUnits(
+
                     e.args.trcReward,
+
                     18
+
                 )
+
             );
 
-            const usdt = Number(
+            users[wallet].usdt += Number(
+
                 ethers.utils.formatUnits(
+
                     e.args.usdtReward,
+
                     6
+
                 )
+
             );
-
-            if(users[wallet]){
-
-                users[wallet].trc += trc;
-                users[wallet].usdt += usdt;
-
-                continue;
-            }
-
-            let username = "";
-
-            try{
-
-                username = await usernameContract.getUsername(wallet);
-
-            }catch(e){
-
-                username = "";
-
-            }
-
-            if(!username || username.trim() === ""){
-
-                username =
-                    wallet.substring(0,6) +
-                    "..." +
-                    wallet.substring(wallet.length - 4);
-
-            }
-
-            users[wallet] = {
-
-                wallet: wallet,
-                username: username,
-                trc: trc,
-                usdt: usdt
-
-            };
 
         }
 
-        leaderboard = Object.values(users);
+        // ==========================
+        // LOAD USERNAMES IN PARALLEL
+        // ==========================
 
-        leaderboard.sort((a,b)=>{
+        const wallets = Object.keys(users);
 
-            if(b.trc !== a.trc)
-                return b.trc - a.trc;
+        await Promise.all(
 
-            return b.usdt - a.usdt;
+            wallets.map(
 
-        });
+                async(wallet)=>{
 
-        console.log("Leaderboard:", leaderboard);
+                    try{
 
-        renderLeaderboard(leaderboard);
+                        let username =
+
+                        await usernameContract.getUsername(
+
+                            wallet
+
+                        );
+
+                        if(
+
+                            !username ||
+
+                            username.trim()===""
+
+                        ){
+
+                            username =
+
+                            wallet.substring(0,6)+
+
+                            "..."+
+
+                            wallet.substring(
+
+                                wallet.length-4
+
+                            );
+
+                        }
+
+                        users[wallet].username =
+
+                            username;
+
+                    }
+
+                    catch{
+
+                        users[wallet].username =
+
+                            wallet.substring(0,6)+
+
+                            "..."+
+
+                            wallet.substring(
+
+                                wallet.length-4
+
+                            );
+
+                    }
+
+                }
+
+            )
+
+        );
+
+        // ==========================
+        // SORT
+        // ==========================
+
+        leaderboard =
+
+            Object.values(users);
+
+        leaderboard.sort(
+
+            (a,b)=>{
+
+                if(b.trc!==a.trc)
+
+                    return b.trc-a.trc;
+
+                return b.usdt-a.usdt;
+
+            }
+
+        );
+
+        console.log(
+
+            "Leaderboard Loaded:",
+
+            leaderboard
+
+        );
+
+        renderLeaderboard(
+
+            leaderboard
+
+        );
 
     }
+
     catch(err){
 
         console.error(err);
 
-        document.getElementById("leaderboard").innerHTML =
+        document.getElementById(
+
+            "leaderboard"
+
+        ).innerHTML =
+
         "<div class='leader-loading'>Failed to load leaderboard</div>";
 
     }
@@ -727,8 +847,11 @@ async function loadLeaderboard(){
 
 
 
+
+
+
 // =========================================
-// RENDER LEADERBOARD
+// RENDER LEADERBOARD (FAST)
 // =========================================
 
 function renderLeaderboard(data){
@@ -737,21 +860,21 @@ function renderLeaderboard(data){
 
     if(!box) return;
 
-    box.innerHTML = "";
+    if(!data || data.length===0){
 
-    if(data.length === 0){
-
-        box.innerHTML =
-        `
+        box.innerHTML = `
         <div class="leader-empty">
             No rewards claimed in last epoch.
         </div>
         `;
 
         return;
+
     }
 
     const total = Math.min(data.length,20);
+
+    let html = "";
 
     for(let i=0;i<total;i++){
 
@@ -761,33 +884,46 @@ function renderLeaderboard(data){
         let cls = "leader-item";
 
         if(i===0){
-            medal="🥇";
+
+            medal = "👑";
             cls+=" gold";
+
         }
         else if(i===1){
+
             medal="🥈";
             cls+=" silver";
+
         }
         else if(i===2){
+
             medal="🥉";
             cls+=" bronze";
+
         }
 
-        box.innerHTML += `
+        html += `
+
         <div class="${cls}">
 
             <div class="leader-rank">
+
                 ${medal || "#"+(i+1)}
+
             </div>
 
             <div class="leader-center">
 
                 <div class="leader-name">
+
                     ${u.username}
+
                 </div>
 
                 <div class="leader-wallet">
+
                     ${u.wallet.substring(0,8)}...${u.wallet.substring(u.wallet.length-4)}
+
                 </div>
 
             </div>
@@ -795,17 +931,25 @@ function renderLeaderboard(data){
             <div class="leader-right">
 
                 <div class="leader-trc">
+
                     ${u.trc.toFixed(4)} TRC
+
                 </div>
 
                 <div class="leader-usdt">
+
                     ${u.usdt.toFixed(4)} USDT
+
                 </div>
 
             </div>
 
         </div>
+
         `;
+
     }
+
+    box.innerHTML = html;
 
 }
