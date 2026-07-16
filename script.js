@@ -12,6 +12,22 @@ let epochDurationFromContract = 0;
 let epochStartFromContract = 0;
 
 
+// ================= LEADERBOARD =================
+
+let usernameContract;
+
+let leaderboard = [];
+
+const usernameContractAddress = "0x83463C698fE8c7A0B706b8C5479848532DfCc3d0";
+
+const usernameABI = [
+    "function getUsername(address) view returns(string)",
+    "function hasUsername(address) view returns(bool)",
+    "function setUsername(string)",
+    "function editUsername(string)"
+];
+
+
 // ========================== CONTRACT ADDRESSES ==========================
 const contractAddress = "0x90789d75566f6475b6Ea4cbcCF29C7e8F6cE399D";
 const tokenAddress = "0xA355D186C6019BE07ED383309FD1d1c194Bfd06F";
@@ -106,8 +122,16 @@ async function connectWallet() {
     token = new ethers.Contract(tokenAddress, tokenABI, signer);
     usdt = new ethers.Contract(usdtAddress, tokenABI, signer);
 
-    loadData();
-    
+    //======leaderboard=========//
+    usernameContract = new ethers.Contract(
+    usernameContractAddress,
+    usernameABI,
+    signer
+    );
+
+    await loadData();
+
+    await loadLeaderboard();
    
     startTimers(); // ✅ ADDED
     listenEvents();
@@ -555,4 +579,241 @@ function copyRef(){
 
   navigator.clipboard.writeText(link);
   alert("✅ Link copied!");
+}
+
+
+
+
+
+// =========================================
+// LOAD LAST EPOCH LEADERBOARD
+// =========================================
+
+async function loadLeaderboard(){
+
+    try{
+
+        if(!contract) return;
+
+        leaderboard = [];
+
+        const currentEpoch = Number(
+            await contract.currentEpoch()
+        );
+
+        const lastEpoch = currentEpoch - 1;
+
+        if(lastEpoch < 1){
+
+            renderLeaderboard([]);
+
+            return;
+
+        }
+
+        document.getElementById("leaderboard").innerHTML =
+        "<div class='leader-loading'>Loading leaderboard...</div>";
+
+        const filter =
+            contract.filters.RewardClaimed();
+
+        const events =
+            await contract.queryFilter(
+                filter,
+                0,
+                "latest"
+            );
+
+        for(const e of events){
+
+            const epoch =
+                Number(e.args.epoch);
+
+            if(epoch !== lastEpoch)
+                continue;
+
+            const wallet =
+                e.args.user;
+
+            const trc =
+                parseFloat(
+                    ethers.utils.formatUnits(
+                        e.args.trcReward,
+                        18
+                    )
+                );
+
+            const usdt =
+                parseFloat(
+                    ethers.utils.formatUnits(
+                        e.args.usdtReward,
+                        6
+                    )
+                );
+
+            let username = "";
+
+            try{
+
+                username =
+                    await usernameContract.getUsername(wallet);
+
+            }catch(err){
+
+                username = "";
+
+            }
+
+            if(username==""){
+
+                username =
+                    wallet.substring(0,6)
+                    +"..."
+                    +wallet.substring(38);
+
+            }
+
+            leaderboard.push({
+
+                wallet:wallet,
+
+                username:username,
+
+                trc:trc,
+
+                usdt:usdt
+
+            });
+
+        }
+
+        leaderboard.sort(
+
+            (a,b)=>b.trc-a.trc
+
+        );
+
+        renderLeaderboard(leaderboard);
+
+    }catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+// =========================================
+// RENDER LEADERBOARD
+// =========================================
+
+function renderLeaderboard(data){
+
+    const box = document.getElementById("leaderboard");
+
+    if(!box) return;
+
+    box.innerHTML = "";
+
+    if(data.length === 0){
+
+        box.innerHTML =
+        `
+        <div class="leader-empty">
+            No rewards claimed in last epoch.
+        </div>
+        `;
+
+        return;
+    }
+
+    const maxShow = 20;
+
+    const total = Math.min(data.length,maxShow);
+
+    for(let i=0;i<total;i++){
+
+        const u = data[i];
+
+        let medal = "";
+
+        let cls = "leader-item";
+
+        if(i===0){
+
+            medal="🥇";
+
+            cls+=" gold";
+
+        }
+        else if(i===1){
+
+            medal="🥈";
+
+            cls+=" silver";
+
+        }
+        else if(i===2){
+
+            medal="🥉";
+
+            cls+=" bronze";
+
+        }
+
+        box.innerHTML +=
+        `
+        <div class="${cls}">
+
+            <div class="leader-rank">
+
+                ${medal || "#"+(i+1)}
+
+            </div>
+
+            <div class="leader-center">
+
+                <div class="leader-name">
+
+                    ${u.username}
+
+                </div>
+
+                <div class="leader-wallet">
+
+                    ${u.wallet.substring(0,8)}...
+                    ${u.wallet.substring(36)}
+
+                </div>
+
+            </div>
+
+            <div class="leader-right">
+
+                <div class="leader-trc">
+
+                    ${u.trc.toFixed(4)} TRC
+
+                </div>
+
+                <div class="leader-usdt">
+
+                    ${u.usdt.toFixed(4)} USDT
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+    }
+
 }
