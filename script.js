@@ -129,12 +129,19 @@ async function connectWallet() {
     signer
     );
 
-    await loadData();
-      
-   // Load leaderboard after everything else
+   // Load all user data first
+   await loadData();
+
+   // Start leaderboard after the current UI has rendered
     setTimeout(() => {
-        loadLeaderboard();
-    }, 2500);
+
+        loadLeaderboard().catch(err => {
+
+           console.error(err);
+
+        });
+
+    }, 0);
    
     startTimers(); // ✅ ADDED
     listenEvents();
@@ -591,21 +598,20 @@ function copyRef(){
 
 
 // =========================================
-// LOAD LAST EPOCH LEADERBOARD (FAST)
+// LOAD LAST EPOCH LEADERBOARD (FAST + CACHE)
 // =========================================
 
 async function loadLeaderboard(){
-    
-   if(window.innerWidth < 768){
-       await new Promise(resolve => setTimeout(resolve, 3000));
-   }
+
     try{
 
         if(!contract || !provider) return;
 
-        leaderboard = [];
+        const board = document.getElementById("leaderboard");
 
-        document.getElementById("leaderboard").innerHTML =
+        if(!board) return;
+
+        board.innerHTML =
         "<div class='leader-loading'>Loading Leaderboard...</div>";
 
         const currentEpoch = Number(
@@ -622,36 +628,68 @@ async function loadLeaderboard(){
 
         }
 
-        // CHANGE ONLY THIS IF CONTRACT DEPLOY BLOCK CHANGES
+        // ==========================
+        // SHOW CACHE INSTANTLY
+        // ==========================
+
+        const cacheKey = "leaderboard_" + lastEpoch;
+
+        const cache = localStorage.getItem(cacheKey);
+
+        if(cache){
+
+            try{
+
+                leaderboard = JSON.parse(cache);
+
+                renderLeaderboard(leaderboard);
+
+            }catch(e){}
+
+        }
+
+        // ==========================
+        // READ EVENTS
+        // ==========================
+
         const DEPLOY_BLOCK = 89400917;
 
         const latestBlock =
-            await provider.getBlockNumber();
+        await provider.getBlockNumber();
 
         const filter =
-            contract.filters.RewardClaimed();
-
-        // ==========================
-        // LOAD EVENTS IN PARALLEL
-        // ==========================
+        contract.filters.RewardClaimed();
 
         const requests = [];
 
         for(
+
             let from = DEPLOY_BLOCK;
+
             from <= latestBlock;
-            from += 50000
+
+            from += 9000
+
         ){
 
-            const to =
-                Math.min(from + 49999, latestBlock);
+            const to = Math.min(
+
+                from + 8999,
+
+                latestBlock
+
+            );
 
             requests.push(
 
                 contract.queryFilter(
+
                     filter,
+
                     from,
+
                     to
+
                 )
 
             );
@@ -659,39 +697,35 @@ async function loadLeaderboard(){
         }
 
         const results =
-            await Promise.all(requests);
+
+        await Promise.all(requests);
 
         const events = results.flat();
 
-        console.log(
-            "RewardClaimed Events:",
-            events.length
-        );
-
         // ==========================
-        // BUILD USER DATA
+        // BUILD USERS
         // ==========================
 
         const users = {};
 
         for(const e of events){
 
-            if(Number(e.args.epoch) !== lastEpoch)
+            if(Number(e.args.epoch)!==lastEpoch)
                 continue;
 
             const wallet = e.args.user;
 
             if(!users[wallet]){
 
-                users[wallet] = {
+                users[wallet]={
 
-                    wallet: wallet,
+                    wallet,
 
-                    username: "",
+                    username:"",
 
-                    trc: 0,
+                    trc:0,
 
-                    usdt: 0
+                    usdt:0
 
                 };
 
@@ -724,10 +758,12 @@ async function loadLeaderboard(){
         }
 
         // ==========================
-        // LOAD USERNAMES IN PARALLEL
+        // LOAD USERNAMES
         // ==========================
 
-        const wallets = Object.keys(users);
+        const wallets =
+
+        Object.keys(users);
 
         await Promise.all(
 
@@ -755,9 +791,9 @@ async function loadLeaderboard(){
 
                             username =
 
-                            wallet.substring(0,6)+
+                            wallet.substring(0,6)
 
-                            "..."+
+                            +"..."+
 
                             wallet.substring(
 
@@ -769,7 +805,7 @@ async function loadLeaderboard(){
 
                         users[wallet].username =
 
-                            username;
+                        username;
 
                     }
 
@@ -777,15 +813,15 @@ async function loadLeaderboard(){
 
                         users[wallet].username =
 
-                            wallet.substring(0,6)+
+                        wallet.substring(0,6)
 
-                            "..."+
+                        +"..."+
 
-                            wallet.substring(
+                        wallet.substring(
 
-                                wallet.length-4
+                            wallet.length-4
 
-                            );
+                        );
 
                     }
 
@@ -801,7 +837,7 @@ async function loadLeaderboard(){
 
         leaderboard =
 
-            Object.values(users);
+        Object.values(users);
 
         leaderboard.sort(
 
@@ -817,11 +853,19 @@ async function loadLeaderboard(){
 
         );
 
-        console.log(
+        // ==========================
+        // SAVE CACHE
+        // ==========================
 
-            "Leaderboard Loaded:",
+        localStorage.setItem(
 
-            leaderboard
+            cacheKey,
+
+            JSON.stringify(
+
+                leaderboard
+
+            )
 
         );
 
@@ -835,7 +879,13 @@ async function loadLeaderboard(){
 
     catch(err){
 
-        console.error(err);
+        console.error(
+
+            "Leaderboard:",
+
+            err
+
+        );
 
         document.getElementById(
 
@@ -847,7 +897,6 @@ async function loadLeaderboard(){
 
     }
 
-}
 
 
 
@@ -856,8 +905,10 @@ async function loadLeaderboard(){
 
 
 
-// =========================================
-// RENDER LEADERBOARD (FAST)
+
+
+    // =========================================
+// RENDER LEADERBOARD
 // =========================================
 
 function renderLeaderboard(data){
@@ -868,26 +919,25 @@ function renderLeaderboard(data){
 
     if(!data || data.length===0){
 
-        box.innerHTML = `
+        box.innerHTML=`
         <div class="leader-empty">
             No rewards claimed in last epoch.
-        </div>
-        `;
+        </div>`;
 
         return;
 
     }
 
-    const total = Math.min(data.length,20);
+    let html="";
 
-    let html = "";
+    const total=Math.min(data.length,20);
 
     for(let i=0;i<total;i++){
 
-        const u = data[i];
+        const u=data[i];
 
-        let medal = "";
-        let cls = "leader-item";
+        let medal="";
+        let cls="leader-item";
 
         if(i===0){
 
@@ -908,7 +958,12 @@ function renderLeaderboard(data){
 
         }
 
-        html += `
+        const walletShort=
+        u.wallet.substring(0,8)+
+        "..."+
+        u.wallet.substring(u.wallet.length-4);
+
+        html+=`
 
         <div class="${cls}">
 
@@ -928,7 +983,7 @@ function renderLeaderboard(data){
 
                 <div class="leader-wallet">
 
-                    ${u.wallet.substring(0,8)}...${u.wallet.substring(u.wallet.length-4)}
+                    ${walletShort}
 
                 </div>
 
@@ -938,13 +993,13 @@ function renderLeaderboard(data){
 
                 <div class="leader-trc">
 
-                    ${u.trc.toFixed(4)} TRC
+                    ${Number(u.trc).toFixed(4)} TRC
 
                 </div>
 
                 <div class="leader-usdt">
 
-                    ${u.usdt.toFixed(4)} USDT
+                    ${Number(u.usdt).toFixed(4)} USDT
 
                 </div>
 
@@ -956,6 +1011,7 @@ function renderLeaderboard(data){
 
     }
 
-    box.innerHTML = html;
+    box.innerHTML=html;
 
+}
 }
