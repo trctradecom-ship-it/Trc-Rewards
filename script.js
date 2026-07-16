@@ -130,8 +130,11 @@ async function connectWallet() {
     );
 
     await loadData();
-
-    await loadLeaderboard();
+      
+   // Load leaderboard after everything else
+    setTimeout(() => {
+        loadLeaderboard();
+    }, 2500);
    
     startTimers(); // ✅ ADDED
     listenEvents();
@@ -592,7 +595,10 @@ function copyRef(){
 // =========================================
 
 async function loadLeaderboard(){
-
+    
+   if(window.innerWidth < 768){
+       await new Promise(resolve => setTimeout(resolve, 3000));
+   }
     try{
 
         if(!contract || !provider) return;
@@ -634,11 +640,11 @@ async function loadLeaderboard(){
         for(
             let from = DEPLOY_BLOCK;
             from <= latestBlock;
-            from += 9000
+            from += 50000
         ){
 
             const to =
-                Math.min(from + 8999, latestBlock);
+                Math.min(from + 49999, latestBlock);
 
             requests.push(
 
