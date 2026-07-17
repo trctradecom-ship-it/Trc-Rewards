@@ -831,24 +831,27 @@ console.log(
         // SORT
         // ==========================
 
-        leaderboard =
+       // ==========================
+// BUILD LEADERBOARD
+// ==========================
 
-        Object.values(users);
+leaderboard = Object.values(users).filter(u =>
+    u.trc > 0 || u.usdt > 0
+);
 
-        leaderboard.sort(
+leaderboard.sort(
 
-            (a,b)=>{
+    (a,b)=>{
 
-                if(b.trc!==a.trc)
+        if(b.trc !== a.trc)
 
-                    return b.trc-a.trc;
+            return b.trc - a.trc;
 
-                return b.usdt-a.usdt;
+        return b.usdt - a.usdt;
 
-            }
+    }
 
-        );
-
+);
         // ==========================
         // SAVE CACHE
         // ==========================
