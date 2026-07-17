@@ -1037,8 +1037,8 @@ RIGHT
 .leader-trc{
 
     color:#FFD700;
-    font-size:19px;
-    font-weight:bold;
+    font-size:12px;
+    font-weight:600;
 
 }
 
@@ -1046,8 +1046,8 @@ RIGHT
 
     margin-top:6px;
     color:#59ff7f;
-    font-size:15px;
-    font-weight:600;
+    font-size:18px;
+    font-weight:800;
 
 }
 
@@ -1241,11 +1241,18 @@ font-size:18px;
 
 }
 
-.leader-trc{
+.leader-usdt{
 
-font-size:17px;
+font-size:20px;
 
 }
+
+.leader-trc{
+
+font-size:14px;
+
+}
+
 
 }
 
@@ -1324,13 +1331,13 @@ min-width:92px;
 
 .leader-trc{
 
-font-size:15px;
+font-size:12px;
 
 }
 
 .leader-usdt{
 
-font-size:12px;
+font-size:17px;
 
 }
 
