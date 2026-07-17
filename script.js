@@ -172,11 +172,11 @@ async function updateWalletDisplay(){
 
             const username = await usernameContract.getUsername(user);
 
-            document.getElementById("wallet").innerText = username;
+            document.getElementById("wallet").innerHTML = "👤 " + username;
 
         }else{
 
-            document.getElementById("wallet").innerText = "➕ Set Username";
+            document.getElementById("wallet").innerHTML = "➕ Set Username";
 
         }
 
