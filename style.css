@@ -1426,22 +1426,25 @@ min-width:82px;
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    padding:10px 18px;
-    min-width:140px;
-    max-width:180px;
-    height:44px;
+    gap:8px;
+    padding:6px 14px;
+    min-width:110px;
+    max-width:150px;
+    height:36px;
     cursor:pointer;
-    border-radius:30px;
-    background:linear-gradient(135deg,#2b2100,#6f4b00,#ffb300);
+    border-radius:22px;
+
+    background:linear-gradient(135deg,#3d2a00,#a66d00,#ffbf00);
     color:#fff;
-    font-size:18px;
+    font-size:15px;
     font-weight:700;
-    letter-spacing:.5px;
-    text-shadow:0 0 8px rgba(255,215,0,.8);
-    border:1px solid rgba(255,215,0,.6);
+
+    border:1px solid rgba(255,215,0,.5);
+
     box-shadow:
-        0 0 12px rgba(255,179,0,.45),
-        inset 0 0 10px rgba(255,255,255,.08);
+        0 0 8px rgba(255,190,0,.35),
+        inset 0 0 5px rgba(255,255,255,.08);
+
     transition:.25s;
     overflow:hidden;
     white-space:nowrap;
@@ -1449,12 +1452,10 @@ min-width:82px;
 }
 
 .walletAddress:hover{
-    transform:scale(1.05);
-    box-shadow:
-        0 0 18px rgba(255,215,0,.8),
-        0 0 30px rgba(255,179,0,.4);
+    transform:scale(1.03);
+    box-shadow:0 0 12px rgba(255,215,0,.6);
 }
 
 .walletAddress:active{
-    transform:scale(.96);
+    transform:scale(.97);
 }
