@@ -965,7 +965,7 @@ function renderLeaderboard(data){
 
             <div class="leader-rank">
 
-                ${medal || "#"+(i+1)}
+                ${medal || (i+1)}
 
             </div>
 
