@@ -673,15 +673,22 @@ const fromBlock = Math.max(
     latestBlock - blocksPerEpoch - 10000 // safety margin
 );
 
-// RewardClaimed filter
 const filter = contract.filters.RewardClaimed();
 
-// Query only the recent block range
-const events = await contract.queryFilter(
-    filter,
-    fromBlock,
-    latestBlock
-);
+const events = [];
+
+for (let start = fromBlock; start <= latestBlock; start += 10000) {
+
+    const end = Math.min(start + 9999, latestBlock);
+
+    const logs = await contract.queryFilter(
+        filter,
+        start,
+        end
+    );
+
+    events.push(...logs);
+}
 
 console.log(
     "Leaderboard Scan:",
@@ -690,8 +697,7 @@ console.log(
     latestBlock,
     "Events:",
     events.length
-);
-         
+); 
         // ==========================
         // BUILD USERS
         // ==========================
