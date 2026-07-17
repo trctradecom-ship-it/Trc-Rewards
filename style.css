@@ -1416,3 +1416,45 @@ min-width:82px;
 
 
 
+
+
+
+
+
+
+.userProfile{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#111b38;
+    border-radius:16px;
+    padding:12px 16px;
+    margin:15px 0;
+}
+
+.userIcon{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#ffb300;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+}
+
+.userDetails{
+    display:flex;
+    flex-direction:column;
+}
+
+#displayUsername{
+    color:#FFD54A;
+    font-size:18px;
+    font-weight:bold;
+}
+
+#displayWallet{
+    color:#bbb;
+    font-size:12px;
+}
