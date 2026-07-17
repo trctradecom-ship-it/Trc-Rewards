@@ -1394,24 +1394,8 @@ min-width:82px;
 
 }
 
-.leader-trc{
-
-font-size:11px;
-
-}
-
 .leader-usdt{
-
-font-size:15px;
-
-}
-
-}
-
-
-
-.leader-usdt{
-    font-size:24px;
+    font-size:18px;
     font-weight:800;
 }
 
@@ -1419,3 +1403,9 @@ font-size:15px;
     font-size:13px;
     font-weight:600;
 }
+
+
+}
+
+
+
