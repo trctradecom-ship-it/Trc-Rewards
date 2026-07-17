@@ -987,16 +987,16 @@ function renderLeaderboard(data){
 
             <div class="leader-right">
 
-                <div class="leader-trc">
-
-                    ${Number(u.trc).toFixed(4)} TRC
-
+                <div class="leader-usdt">
+    
+                ${Number(u.usdt).toFixed(4)} USDT
+                
                 </div>
 
-                <div class="leader-usdt">
-
-                    ${Number(u.usdt).toFixed(4)} USDT
-
+                <div class="leader-trc">
+                
+                     ${Number(u.trc).toFixed(4)} TRC
+                    
                 </div>
 
             </div>
