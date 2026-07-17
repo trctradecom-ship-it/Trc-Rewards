@@ -112,7 +112,7 @@ async function connectWallet() {
     signer = provider.getSigner();
     user = await signer.getAddress();
     
-    document.getElementById("wallet").innerText = user;
+    await updateWalletDisplay();
     
     //======referral=========
     document.getElementById("refLink").value =
@@ -150,6 +150,39 @@ async function connectWallet() {
     console.log(err);
   }
 }
+
+
+
+async function updateWalletDisplay(){
+
+    if(!user || !usernameContract) return;
+
+    try{
+
+        const hasName = await usernameContract.hasUsername(user);
+
+        if(hasName){
+
+            const username = await usernameContract.getUsername(user);
+
+            document.getElementById("wallet").innerText = username;
+
+        }else{
+
+            document.getElementById("wallet").innerText = "➕ Set Username";
+
+        }
+
+    }catch(e){
+
+        document.getElementById("wallet").innerText =
+            user.substring(0,6) + "..." + user.substring(user.length-4);
+
+    }
+
+}
+
+
 
 // ========================== LOAD DASHBOARD DATA ==========================
 async function loadData(){
@@ -1013,4 +1046,78 @@ function renderLeaderboard(data){
     box.innerHTML=html;
 
 }
+}
+
+
+
+
+
+async function setOrEditUsername(){
+
+    if(!user){
+
+        alert("Connect wallet first");
+
+        return;
+
+    }
+
+    try{
+
+        const hasName = await usernameContract.hasUsername(user);
+
+        let oldName = "";
+
+        if(hasName){
+
+            oldName = await usernameContract.getUsername(user);
+
+        }
+
+        const username = prompt(
+            hasName ? "Edit Username" : "Set Username",
+            oldName
+        );
+
+        if(username === null) return;
+
+        if(username.trim() === ""){
+
+            alert("Username cannot be empty");
+
+            return;
+
+        }
+
+        let tx;
+
+        if(hasName){
+
+            tx = await usernameContract.editUsername(username.trim());
+
+        }else{
+
+            tx = await usernameContract.setUsername(username.trim());
+
+        }
+
+        document.getElementById("status").innerHTML =
+            "⏳ Waiting for confirmation...";
+
+        await tx.wait();
+
+        document.getElementById("status").innerHTML =
+            "✅ Username Updated";
+
+        await updateWalletDisplay();
+
+    }catch(err){
+
+        console.log(err);
+
+        document.getElementById("status").innerHTML =
+            "❌ Username Update Failed";
+
+    }
+
 }
