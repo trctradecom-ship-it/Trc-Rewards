@@ -1422,39 +1422,39 @@ min-width:82px;
 
 
 
-.userProfile{
-    display:flex;
+.walletAddress{
+    display:inline-flex;
     align-items:center;
-    gap:12px;
-    background:#111b38;
-    border-radius:16px;
-    padding:12px 16px;
-    margin:15px 0;
-}
-
-.userIcon{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#ffb300;
-    display:flex;
     justify-content:center;
-    align-items:center;
-    font-size:22px;
-}
-
-.userDetails{
-    display:flex;
-    flex-direction:column;
-}
-
-#displayUsername{
-    color:#FFD54A;
+    padding:10px 18px;
+    min-width:140px;
+    max-width:180px;
+    height:44px;
+    cursor:pointer;
+    border-radius:30px;
+    background:linear-gradient(135deg,#2b2100,#6f4b00,#ffb300);
+    color:#fff;
     font-size:18px;
-    font-weight:bold;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-shadow:0 0 8px rgba(255,215,0,.8);
+    border:1px solid rgba(255,215,0,.6);
+    box-shadow:
+        0 0 12px rgba(255,179,0,.45),
+        inset 0 0 10px rgba(255,255,255,.08);
+    transition:.25s;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 }
 
-#displayWallet{
-    color:#bbb;
-    font-size:12px;
+.walletAddress:hover{
+    transform:scale(1.05);
+    box-shadow:
+        0 0 18px rgba(255,215,0,.8),
+        0 0 30px rgba(255,179,0,.4);
+}
+
+.walletAddress:active{
+    transform:scale(.96);
 }
