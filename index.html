@@ -31,24 +31,13 @@ TRC Price
 <span id="price">$0</span>
 </div>
 
-<div id="wallet" class="walletAddress">Wallet Not Connected</div>
+<div id="wallet"
+     class="walletAddress"
+     onclick="setOrEditUsername()"
+     title="Click to Set/Edit Username">
+    Wallet Not Connected
 </div>
-
-  
-<!-- user name  -->
-<div class="userProfile">
-
-    <div class="userIcon">👤</div>
-
-    <div class="userDetails">
-
-        <div id="displayUsername">Not Connected</div>
-
-        <div id="displayWallet">Connect wallet to view address</div>
-
-    </div>
-
-</div>  
+</div>
 
 <button onclick="connectWallet()" class="mainBtn">
 Connect Wallet
