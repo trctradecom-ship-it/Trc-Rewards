@@ -1423,37 +1423,47 @@ min-width:82px;
 
 
 .walletAddress{
-    display:inline-flex;
+    display:flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
-    padding:6px 14px;
-    min-width:110px;
-    max-width:150px;
-    height:36px;
-    cursor:pointer;
-    border-radius:22px;
+    gap:6px;
 
-    background:linear-gradient(135deg,#3d2a00,#a66d00,#ffbf00);
+    width:120px;
+    height:34px;
+
+    padding:0 10px;
+
+    border-radius:18px;
+    cursor:pointer;
+
+    background:linear-gradient(135deg,#4a3200,#d89a00,#ffbf00);
+
     color:#fff;
     font-size:15px;
     font-weight:700;
 
-    border:1px solid rgba(255,215,0,.5);
+    border:1px solid rgba(255,215,0,.55);
 
     box-shadow:
-        0 0 8px rgba(255,190,0,.35),
-        inset 0 0 5px rgba(255,255,255,.08);
+        0 0 10px rgba(255,200,0,.35),
+        inset 0 0 6px rgba(255,255,255,.08);
 
-    transition:.25s;
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
+
+    transition:.25s;
+}
+
+.walletAddress::before{
+    content:"👤";
+    font-size:16px;
 }
 
 .walletAddress:hover{
     transform:scale(1.03);
-    box-shadow:0 0 12px rgba(255,215,0,.6);
+    box-shadow:
+        0 0 14px rgba(255,215,0,.55);
 }
 
 .walletAddress:active{
