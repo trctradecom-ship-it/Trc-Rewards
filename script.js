@@ -112,7 +112,6 @@ async function connectWallet() {
     signer = provider.getSigner();
     user = await signer.getAddress();
     
-    await updateWalletDisplay();
     
     //======referral=========
     document.getElementById("refLink").value =
@@ -128,7 +127,9 @@ async function connectWallet() {
     usernameABI,
     signer
     );
-
+     
+    await updateWalletDisplay(); 
+      
    // Load all user data first
    await loadData();
 
@@ -155,7 +156,13 @@ async function connectWallet() {
 
 async function updateWalletDisplay(){
 
-    if(!user || !usernameContract) return;
+    if(!user) return;
+
+    if(!usernameContract){
+        document.getElementById("wallet").innerText =
+            user.substring(0,6) + "..." + user.substring(user.length-4);
+        return;
+    }
 
     try{
 
@@ -173,7 +180,7 @@ async function updateWalletDisplay(){
 
         }
 
-    }catch(e){
+    }catch(err){
 
         document.getElementById("wallet").innerText =
             user.substring(0,6) + "..." + user.substring(user.length-4);
