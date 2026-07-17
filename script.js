@@ -652,56 +652,40 @@ async function loadLeaderboard(){
         // READ EVENTS
         // ==========================
 
-        const DEPLOY_BLOCK = 89400917;
+       // ==========================
+// READ ONLY LAST EPOCH BLOCKS
+// ==========================
 
-        const latestBlock =
-        await provider.getBlockNumber();
+const latestBlock = await provider.getBlockNumber();
 
-        const filter =
-        contract.filters.RewardClaimed();
+const epochSeconds = Number(await contract.getEpochDuration());
 
-        const requests = [];
+// Polygon average block time ≈ 2 seconds
+const blocksPerEpoch = Math.ceil(epochSeconds / 2);
 
-        for(
+// Your deployment block
+const DEPLOY_BLOCK = 89400917;
 
-            let from = DEPLOY_BLOCK;
+// Scan only the last epoch worth of blocks
+const fromBlock = Math.max(
+    DEPLOY_BLOCK,
+    latestBlock - blocksPerEpoch
+);
 
-            from <= latestBlock;
+const events = await contract.queryFilter(
+    contract.filters.RewardClaimed(),
+    fromBlock,
+    latestBlock
+);
 
-            from += 9000
-
-        ){
-
-            const to = Math.min(
-
-                from + 8999,
-
-                latestBlock
-
-            );
-
-            requests.push(
-
-                contract.queryFilter(
-
-                    filter,
-
-                    from,
-
-                    to
-
-                )
-
-            );
-
-        }
-
-        const results =
-
-        await Promise.all(requests);
-
-        const events = results.flat();
-
+console.log(
+    "Scanning blocks:",
+    fromBlock,
+    "→",
+    latestBlock,
+    "Events:",
+    events.length
+);
         // ==========================
         // BUILD USERS
         // ==========================
