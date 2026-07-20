@@ -694,48 +694,60 @@ async function loadLeaderboard(){
         // ==========================
           // ==========================
         // READ EVENTS (LAST EPOCH ONLY)
-// ==========================
-     // READ EVENTS (LAST EPOCH ONLY)
+        // ==========================
+// READ EVENTS (LAST EPOCH ONLY)
 // ==========================
 
-// Your contract deployment block
 const DEPLOY_BLOCK = 89400917;
 
 // Latest block
 const latestBlock = await provider.getBlockNumber();
 
-// Epoch duration from contract (seconds)
+// Epoch duration (432000 sec)
 const epochSeconds = Number(await contract.getEpochDuration());
 
-// ==========================
-// ACCURATE 432000 SEC EPOCH SCAN
-// ==========================
-
+// Polygon average block time
 const avgBlockTime = 2;
 
-const blocksPerEpoch = Math.ceil(
-    epochSeconds / avgBlockTime
-);
+// Blocks in one epoch
+const blocksPerEpoch = Math.ceil(epochSeconds / avgBlockTime);
 
+// Extra safety (about 1 day)
 const safetyBlocks = 50000;
 
-const fromBlock = DEPLOY_BLOCK;
-        
+// Scan only recent history
+const fromBlock = Math.max(
+    DEPLOY_BLOCK,
+    latestBlock - blocksPerEpoch - safetyBlocks
+);
+
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-for (let start = fromBlock; start <= latestBlock; start += 10000) {
+//  chunk =  RPC requests
+const CHUNK = 10000;
 
-    const end = Math.min(start + 9999, latestBlock);
+for (let start = fromBlock; start <= latestBlock; start += CHUNK) {
 
-    const logs = await contract.queryFilter(
-        filter,
-        start,
-        end
-    );
+    const end = Math.min(start + CHUNK - 1, latestBlock);
 
-    events.push(...logs);
+    try {
+
+        const logs = await contract.queryFilter(
+            filter,
+            start,
+            end
+        );
+
+        events.push(...logs);
+
+    } catch (e) {
+
+        console.log("Chunk failed:", start);
+
+    }
+
 }
 
 console.log(
