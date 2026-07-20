@@ -716,11 +716,8 @@ const blocksPerEpoch = Math.ceil(
 
 const safetyBlocks = 20000;
 
-const fromBlock = Math.max(
-    DEPLOY_BLOCK,
-    latestBlock - blocksPerEpoch - safetyBlocks
-);
-
+const fromBlock = DEPLOY_BLOCK;
+        
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
