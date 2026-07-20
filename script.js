@@ -435,30 +435,6 @@ function listenEvents() {
     }
 });
 
-
-   // ==========================
-// LIVE LEADERBOARD UPDATE
-// ==========================
-contract.on(
-    "RewardClaimed",
-    async (userAddr, trcReward, usdtReward, epoch, event) => {
-
-        const currentEpoch = Number(await contract.currentEpoch());
-
-        if (Number(epoch) !== currentEpoch - 1)
-            return;
-
-        localStorage.setItem(
-            "rewardLastBlock",
-            event.blockNumber
-        );
-
-        loadLeaderboard();
-
-    }
-);    
-   
-
       
     contract.on("EMAUpdated", (price) => {
       if(chart){
@@ -717,71 +693,59 @@ async function loadLeaderboard(){
         // READ EVENTS
         // ==========================
           // ==========================
-         const DEPLOY_BLOCK = 89400917;
+        // READ EVENTS (LAST EPOCH ONLY)
+// ==========================
+     // READ EVENTS (LAST EPOCH ONLY)
+// ==========================
 
+// Your contract deployment block
+const DEPLOY_BLOCK = 89400917;
+
+// Latest block
 const latestBlock = await provider.getBlockNumber();
 
-let fromBlock = Number(
-    localStorage.getItem("rewardLastBlock") || 0
+// Epoch duration from contract (seconds)
+const epochSeconds = Number(await contract.getEpochDuration());
+
+// ==========================
+// ACCURATE 432000 SEC EPOCH SCAN
+// ==========================
+
+const avgBlockTime = 2;
+
+const blocksPerEpoch = Math.ceil(
+    epochSeconds / avgBlockTime
 );
 
-if (fromBlock === 0) {
+const safetyBlocks = 50000;
 
-    const epochSeconds =
-        Number(await contract.getEpochDuration());
-
-    const avgBlockTime = 2;
-
-    const blocksPerEpoch =
-        Math.ceil(epochSeconds / avgBlockTime);
-
-    fromBlock = Math.max(
-        DEPLOY_BLOCK,
-        latestBlock - 50000
-    );
-}
-
+const fromBlock = DEPLOY_BLOCK;
+        
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-const CHUNK = 5000;
+for (let start = fromBlock; start <= latestBlock; start += 10000) {
 
-for (
-    let start = fromBlock;
-    start <= latestBlock;
-    start += CHUNK
-) {
+    const end = Math.min(start + 9999, latestBlock);
 
-    const end = Math.min(
-        start + CHUNK - 1,
-        latestBlock
+    const logs = await contract.queryFilter(
+        filter,
+        start,
+        end
     );
 
-    try {
-
-        const logs =
-            await contract.queryFilter(
-                filter,
-                start,
-                end
-            );
-
-        events.push(...logs);
-
-    } catch(e) {
-
-        console.log("Chunk failed", start);
-
-    }
-
+    events.push(...logs);
 }
 
-localStorage.setItem(
-    "rewardLastBlock",
-    latestBlock
+console.log(
+    "Leaderboard Scan:",
+    fromBlock,
+    "->",
+    latestBlock,
+    "Events:",
+    events.length
 );
-   
         
         // ==========================
         // BUILD USERS
