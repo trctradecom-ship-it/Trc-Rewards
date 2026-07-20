@@ -696,22 +696,19 @@ async function loadLeaderboard(){
 // ==========================
 
 // FAST + ACCURATE EPOCH SCAN
-
 const latestBlock = await provider.getBlockNumber();
 
 const epochSeconds = Number(
     await contract.getEpochDuration()
 );
 
-// Polygon average block time
 const avgBlockTime = 2.3;
 
 const blocksPerEpoch = Math.ceil(
     epochSeconds / avgBlockTime
 );
 
-// Scan only last epoch blocks
-const fromBlock = latestBlock - blocksPerEpoch;
+const fromBlock = latestBlock - blocksPerEpoch - 20000;
 
 console.log(
     "Leaderboard Scan:",
@@ -719,12 +716,12 @@ console.log(
     "->",
     latestBlock
 );
-        
+
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-for (let start = fromBlock; start <= latestBlock; start += 10000) {
+for(let start = fromBlock; start <= latestBlock; start += 10000){
 
     const end = Math.min(start + 9999, latestBlock);
 
@@ -736,7 +733,6 @@ for (let start = fromBlock; start <= latestBlock; start += 10000) {
 
     events.push(...logs);
 }
-
 console.log(
     "Leaderboard Scan:",
     fromBlock,
