@@ -704,22 +704,30 @@ const latestBlock = await provider.getBlockNumber();
 // Epoch duration from contract (seconds)
 const epochSeconds = Number(await contract.getEpochDuration());
 
-// Polygon average block time ≈ 2 seconds
-const blocksPerEpoch = Math.ceil(epochSeconds / 2);
+// ==========================
+// ACCURATE 432000 SEC EPOCH SCAN
+// ==========================
 
-// Scan only the previous epoch's blocks
+const avgBlockTime = 2;
+
+const blocksPerEpoch = Math.ceil(
+    epochSeconds / avgBlockTime
+);
+
+const safetyBlocks = 20000;
+
 const fromBlock = Math.max(
     DEPLOY_BLOCK,
-    latestBlock - blocksPerEpoch - 10000 // safety margin
+    latestBlock - blocksPerEpoch - safetyBlocks
 );
 
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-for (let start = fromBlock; start <= latestBlock; start += 10000) {
+for (let start = fromBlock; start <= latestBlock; start += 5000) {
 
-    const end = Math.min(start + 9999, latestBlock);
+    const end = Math.min(start + 4999, latestBlock);
 
     const logs = await contract.queryFilter(
         filter,
