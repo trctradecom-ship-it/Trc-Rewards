@@ -710,7 +710,7 @@ const blocksPerEpoch = Math.ceil(epochSeconds / 2);
 // Scan only the previous epoch's blocks
 const fromBlock = Math.max(
     DEPLOY_BLOCK,
-    latestBlock - 300000 // safety margin
+    latestBlock - 400000 // safety margin
 );
 
 const filter = contract.filters.RewardClaimed();
