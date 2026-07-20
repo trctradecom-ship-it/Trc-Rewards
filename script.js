@@ -716,7 +716,7 @@ const blocksPerEpoch = Math.ceil(
     epochSeconds / avgBlockTime
 );
 
-const safetyBlocks = 20000;
+const safetyBlocks = 50000;
 
 const fromBlock = DEPLOY_BLOCK;
         
@@ -724,9 +724,9 @@ const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-for (let start = fromBlock; start <= latestBlock; start += 5000) {
+for (let start = fromBlock; start <= latestBlock; start += 10000) {
 
-    const end = Math.min(start + 4999, latestBlock);
+    const end = Math.min(start + 9999, latestBlock);
 
     const logs = await contract.queryFilter(
         filter,
