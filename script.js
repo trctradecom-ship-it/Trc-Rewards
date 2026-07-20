@@ -737,7 +737,7 @@ if (fromBlock === 0) {
 
     fromBlock = Math.max(
         DEPLOY_BLOCK,
-        latestBlock - blocksPerEpoch - 30000
+        latestBlock - 50000
     );
 }
 
@@ -745,7 +745,7 @@ const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-const CHUNK = 20000;
+const CHUNK = 5000;
 
 for (
     let start = fromBlock;
