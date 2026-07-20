@@ -695,36 +695,38 @@ async function loadLeaderboard(){
 // READ EVENTS (LAST EPOCH ONLY)
 // ==========================
 
-// Your contract deployment block
-const DEPLOY_BLOCK = 89400917;
+// FAST + ACCURATE EPOCH SCAN
 
-// Latest block
 const latestBlock = await provider.getBlockNumber();
 
-// Epoch duration from contract (seconds)
-const epochSeconds = Number(await contract.getEpochDuration());
+const epochSeconds = Number(
+    await contract.getEpochDuration()
+);
 
-// ==========================
-// ACCURATE 432000 SEC EPOCH SCAN
-// ==========================
-
-const avgBlockTime = 2;
+// Polygon average block time
+const avgBlockTime = 2.3;
 
 const blocksPerEpoch = Math.ceil(
     epochSeconds / avgBlockTime
 );
 
-const safetyBlocks = 20000;
+// Scan only last epoch blocks
+const fromBlock = latestBlock - blocksPerEpoch;
 
-const fromBlock = DEPLOY_BLOCK;
+console.log(
+    "Leaderboard Scan:",
+    fromBlock,
+    "->",
+    latestBlock
+);
         
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-for (let start = fromBlock; start <= latestBlock; start += 5000) {
+for (let start = fromBlock; start <= latestBlock; start += 10000) {
 
-    const end = Math.min(start + 4999, latestBlock);
+    const end = Math.min(start + 9999, latestBlock);
 
     const logs = await contract.queryFilter(
         filter,
