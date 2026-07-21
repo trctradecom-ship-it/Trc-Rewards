@@ -729,16 +729,26 @@ for (let start = fromBlock; start <= latestBlock; start += CHUNK) {
 
     const end = Math.min(start + CHUNK - 1, latestBlock);
 
-    const logs = await contract.queryFilter(
-        filter,
-        start,
-        end
-    );
+    try {
 
-    events.push(...logs);
+        const logs = await contract.queryFilter(
+            filter,
+            start,
+            end
+        );
+
+        events.push(...logs);
+
+    } catch (err) {
+
+        console.log("Chunk failed:", start);
+
+    }
+
 }
 
 console.log("Events:", events.length);
+        
         // ==========================
         // BUILD USERS
         // ==========================
