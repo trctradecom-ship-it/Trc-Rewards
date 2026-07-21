@@ -713,7 +713,7 @@ const avgBlockTime = 2;
 const blocksPerEpoch = Math.ceil(epochSeconds / avgBlockTime);
 
 // Extra safety (about 1 day)
-const safetyBlocks = 50000;
+const safetyBlocks = 70000;
 
 // Scan only recent history
 const fromBlock = Math.max(
