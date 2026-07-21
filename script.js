@@ -707,7 +707,7 @@ const latestBlock = await provider.getBlockNumber();
 const epochSeconds = Number(await contract.getEpochDuration());
 
 // Polygon average block time
-const avgBlockTime = 2;
+const avgBlockTime = 1.8;
 
 // Blocks in one epoch
 const blocksPerEpoch = Math.ceil(epochSeconds / avgBlockTime);
