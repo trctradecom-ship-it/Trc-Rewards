@@ -695,6 +695,7 @@ async function loadLeaderboard(){
           // ==========================
         // READ EVENTS (LAST EPOCH ONLY)
         // ==========================
+        // ==========================
 // READ EVENTS (LAST EPOCH ONLY)
 // ==========================
 
@@ -712,25 +713,47 @@ const avgBlockTime = 1.6;
 // Blocks in one epoch
 const blocksPerEpoch = Math.ceil(epochSeconds / avgBlockTime);
 
-// Extra safety (about 1 day)
+// Extra safety
 const safetyBlocks = 20000;
 
-// Scan only recent history
-const fromBlock = Math.max(
-    DEPLOY_BLOCK,
-    latestBlock - blocksPerEpoch - safetyBlocks
+// ==========================
+// START BLOCK
+// ==========================
+
+let fromBlock = Number(
+    localStorage.getItem("rewardLastBlock") || 0
 );
+
+// First open (or cache cleared)
+if (fromBlock === 0) {
+
+    fromBlock = Math.max(
+        DEPLOY_BLOCK,
+        latestBlock - blocksPerEpoch - safetyBlocks
+    );
+
+}
+
+// Never scan future blocks
+if (fromBlock > latestBlock) {
+
+    fromBlock = latestBlock;
+
+}
 
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-//  chunk =  RPC requests
+// RPC limit
 const CHUNK = 10000;
 
 for (let start = fromBlock; start <= latestBlock; start += CHUNK) {
 
-    const end = Math.min(start + CHUNK - 1, latestBlock);
+    const end = Math.min(
+        start + CHUNK - 1,
+        latestBlock
+    );
 
     try {
 
@@ -749,6 +772,12 @@ for (let start = fromBlock; start <= latestBlock; start += CHUNK) {
     }
 
 }
+
+// Save latest scanned block
+localStorage.setItem(
+    "rewardLastBlock",
+    latestBlock
+);
 
 console.log(
     "Leaderboard Scan:",
