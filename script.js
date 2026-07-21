@@ -692,38 +692,31 @@ async function loadLeaderboard(){
         // ==========================
         // READ EVENTS
         // ==========================
-
-// ==========================
-// READ EVENTS (FAST + SAFE)
+          // ==========================
+// READ EVENTS (DEBUG)
 // ==========================
 
 const DEPLOY_BLOCK = 89400917;
 
-// Latest Polygon block
 const latestBlock = await provider.getBlockNumber();
 
-// Epoch duration (seconds)
 const epochSeconds = Number(await contract.getEpochDuration());
-        
-// Polygon average block time
+
 const avgBlockTime = 1.6;
 
-// Blocks in one epoch
 const blocksPerEpoch = Math.ceil(epochSeconds / avgBlockTime);
-        
-// Extra safety margin
+
 const safetyBlocks = 20000;
 
-// Scan only the recent history
+console.log("Latest Block:", latestBlock);
+console.log("Epoch Seconds:", epochSeconds);
+console.log("Blocks Per Epoch:", blocksPerEpoch);
+
 const fromBlock = Math.max(
     DEPLOY_BLOCK,
     latestBlock - blocksPerEpoch - safetyBlocks
 );
 
-// Debug
-console.log("Latest Block:", latestBlock);
-console.log("Epoch Seconds:", epochSeconds);
-console.log("Blocks Per Epoch:", blocksPerEpoch);
 console.log("From Block:", fromBlock);
 
 const filter = contract.filters.RewardClaimed();
@@ -732,50 +725,20 @@ const events = [];
 
 const CHUNK = 10000;
 
-for (
-    let start = fromBlock;
-    start <= latestBlock;
-    start += CHUNK
-) {
+for (let start = fromBlock; start <= latestBlock; start += CHUNK) {
 
-    const end = Math.min(
-        start + CHUNK - 1,
-        latestBlock
+    const end = Math.min(start + CHUNK - 1, latestBlock);
+
+    const logs = await contract.queryFilter(
+        filter,
+        start,
+        end
     );
 
-    try {
-
-        const logs = await contract.queryFilter(
-            filter,
-            start,
-            end
-        );
-
-        if (logs.length > 0) {
-            events.push(...logs);
-        }
-
-    } catch (err) {
-
-        console.log(
-            "Chunk failed:",
-            start,
-            "-",
-            end
-        );
-
-    }
-
+    events.push(...logs);
 }
 
-console.log(
-    "Leaderboard Scan:",
-    fromBlock,
-    "->",
-    latestBlock,
-    "Events:",
-    events.length
-);
+console.log("Events:", events.length);
         // ==========================
         // BUILD USERS
         // ==========================
