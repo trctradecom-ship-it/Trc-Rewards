@@ -696,97 +696,53 @@ async function loadLeaderboard(){
         // READ EVENTS (LAST EPOCH ONLY)
         // ==========================
         // ==========================
-// READ EVENTS (LAST EPOCH ONLY)
+// ==========================
+// READ EVENTS (DEBUG)
 // ==========================
 
 const DEPLOY_BLOCK = 89400917;
 
-// Latest block
 const latestBlock = await provider.getBlockNumber();
 
-// Epoch duration (432000 sec)
 const epochSeconds = Number(await contract.getEpochDuration());
 
-// Polygon average block time
 const avgBlockTime = 1.6;
 
-// Blocks in one epoch
 const blocksPerEpoch = Math.ceil(epochSeconds / avgBlockTime);
 
-// Extra safety
 const safetyBlocks = 20000;
 
-// ==========================
-// START BLOCK
-// ==========================
+console.log("Latest Block:", latestBlock);
+console.log("Epoch Seconds:", epochSeconds);
+console.log("Blocks Per Epoch:", blocksPerEpoch);
 
-let fromBlock = Number(
-    localStorage.getItem("rewardLastBlock") || 0
+const fromBlock = Math.max(
+    DEPLOY_BLOCK,
+    latestBlock - blocksPerEpoch - safetyBlocks
 );
 
-// First open (or cache cleared)
-if (fromBlock === 0) {
-
-    fromBlock = Math.max(
-        DEPLOY_BLOCK,
-        latestBlock - blocksPerEpoch - safetyBlocks
-    );
-
-}
-
-// Never scan future blocks
-if (fromBlock > latestBlock) {
-
-    fromBlock = latestBlock;
-
-}
+console.log("From Block:", fromBlock);
 
 const filter = contract.filters.RewardClaimed();
 
 const events = [];
 
-// RPC limit
 const CHUNK = 10000;
 
 for (let start = fromBlock; start <= latestBlock; start += CHUNK) {
 
-    const end = Math.min(
-        start + CHUNK - 1,
-        latestBlock
+    const end = Math.min(start + CHUNK - 1, latestBlock);
+
+    const logs = await contract.queryFilter(
+        filter,
+        start,
+        end
     );
 
-    try {
-
-        const logs = await contract.queryFilter(
-            filter,
-            start,
-            end
-        );
-
-        events.push(...logs);
-
-    } catch (e) {
-
-        console.log("Chunk failed:", start);
-
-    }
-
+    events.push(...logs);
 }
 
-// Save latest scanned block
-localStorage.setItem(
-    "rewardLastBlock",
-    latestBlock
-);
-
-console.log(
-    "Leaderboard Scan:",
-    fromBlock,
-    "->",
-    latestBlock,
-    "Events:",
-    events.length
-);
+console.log("Events:", events.length);
         
         // ==========================
         // BUILD USERS
