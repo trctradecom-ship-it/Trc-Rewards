@@ -707,13 +707,13 @@ const latestBlock = await provider.getBlockNumber();
 const epochSeconds = Number(await contract.getEpochDuration());
 
 // Polygon average block time
-const avgBlockTime = 1.8;
+const avgBlockTime = 1.6;
 
 // Blocks in one epoch
 const blocksPerEpoch = Math.ceil(epochSeconds / avgBlockTime);
 
 // Extra safety (about 1 day)
-const safetyBlocks = 70000;
+const safetyBlocks = 20000;
 
 // Scan only recent history
 const fromBlock = Math.max(
