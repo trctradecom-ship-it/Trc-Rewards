@@ -18,7 +18,7 @@ let usernameContract;
 
 let leaderboard = [];
 
-const usernameContractAddress = "0x83463C698fE8c7A0B706b8C5479848532DfCc3d0";
+const usernameContractAddress = "0x80eAb5bB2adDEeE5048DA653746f6f1501A5B14e";
 
 const usernameABI = [
     "function getUsername(address) view returns(string)",
